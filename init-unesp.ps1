@@ -1,0 +1,1 @@
+$env:Path += ';C:\Program Files\CodeBlocks\MinGW\bin'

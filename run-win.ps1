@@ -1,0 +1,1 @@
+gcc -o server.exe server.c -lws2_32 -Wall -Wextra -std=c99 -O3
