@@ -8,6 +8,10 @@
     "*.env": "shellscript",
     "*.svg": "html",
     "*.asm": "asm-intel-x86-generic",
-    "string.h": "c"
+    "string.h": "c",
+    "bit": "c",
+    "compare": "c",
+    "cmath": "c",
+    "type_traits": "c"
   }
 }

@@ -32,26 +32,29 @@ typedef struct {
   char body[BUFFER_SIZE];
 } Response;
 
-int init_server(SOCKET *sSock);
-void close_server(SOCKET *sSock);
-int init_client(SOCKET *cSock, SOCKET *sSock);
-int receive_request(SOCKET *cSock, char *reqBuffer);
-bool parse_request(char *reqBuffer, Request *req);
-void print_request(Request *req);
-bool is_static(Request *req);
-void file_extension(char *path, char *extBuf);
-char *mime_type(char *ext);
-void fill_response(Response *res, int statusCode, char *statusText,
-                   char *contentType, char *body);
-void print_response(Response *res);
-void stringify_response(Response *res, char *resStr);
+int init_server(SOCKET* sSock);
+void close_server(SOCKET* sSock);
+int init_client(SOCKET* cSock, SOCKET* sSock);
+int receive_request(SOCKET* cSock, char* reqBuffer);
+bool parse_request(char* reqBuffer, Request* req);
+void print_request(Request* req);
+bool is_static(Request* req);
+void file_extension(char* path, char* extBuf);
+char* mime_type(char* ext);
+void fill_response(Response* res,
+                   int statusCode,
+                   char* statusText,
+                   char* contentType,
+                   char* body);
+void print_response(Response* res);
+void stringify_response(Response* res, char* resStr);
 
 int main() {
   SOCKET sSock, cSock;
   char reqBuffer[BUFFER_SIZE], fileBuffer[BUFFER_SIZE], extBuf[10], *resStr;
   Request req;
   Response res;
-  FILE *fp;
+  FILE* fp;
 
   if (init_server(&sSock)) {
     perror("webserver (init)\n");
@@ -59,9 +62,11 @@ int main() {
   }
 
   while (1) {
-    if (init_client(&cSock, &sSock)) return 1;
+    if (init_client(&cSock, &sSock))
+      return 1;
 
-    if (receive_request(&cSock, reqBuffer)) return 1;
+    if (receive_request(&cSock, reqBuffer))
+      return 1;
 
     printf("Received request:\n%s\n", reqBuffer);
 
@@ -114,7 +119,7 @@ int main() {
   return 0;
 }
 
-int init_server(SOCKET *sSock) {
+int init_server(SOCKET* sSock) {
   WSADATA wsaData;
   t_sockaddr_in sAddr;
 
@@ -134,7 +139,7 @@ int init_server(SOCKET *sSock) {
   sAddr.sin_addr.s_addr = INADDR_ANY;
   sAddr.sin_port = htons(8080);
 
-  if (bind(*sSock, (t_sockaddr *)&sAddr, ADDRINSIZE) == SOCKET_ERROR) {
+  if (bind(*sSock, (t_sockaddr*)&sAddr, ADDRINSIZE) == SOCKET_ERROR) {
     perror("Failed to bind server socket.\n");
     close_server(sSock);
     return 1;
@@ -151,16 +156,16 @@ int init_server(SOCKET *sSock) {
   return 0;
 }
 
-void close_server(SOCKET *sSock) {
+void close_server(SOCKET* sSock) {
   closesocket(*sSock);
   WSACleanup();
 }
 
-int init_client(SOCKET *cSock, SOCKET *sSock) {
+int init_client(SOCKET* cSock, SOCKET* sSock) {
   t_sockaddr_in cAddr;
   int cAddrLen = sizeof(cAddr);
 
-  *cSock = accept(*sSock, (t_sockaddr *)&cAddr, &cAddrLen);
+  *cSock = accept(*sSock, (t_sockaddr*)&cAddr, &cAddrLen);
 
   if (*cSock == INVALID_SOCKET) {
     perror("webserver (accept)");
@@ -171,7 +176,7 @@ int init_client(SOCKET *cSock, SOCKET *sSock) {
   return 0;
 }
 
-int receive_request(SOCKET *cSock, char *reqBuffer) {
+int receive_request(SOCKET* cSock, char* reqBuffer) {
   int bytesRead = recv(*cSock, reqBuffer, BUFFER_SIZE, 0);
 
   if (bytesRead == SOCKET_ERROR) {
@@ -185,7 +190,7 @@ int receive_request(SOCKET *cSock, char *reqBuffer) {
   return 0;
 }
 
-void print_request(Request *req) {
+void print_request(Request* req) {
   printf("Method: %s\n", req->method);
   printf("Path: %s\n", req->path);
   printf("HTTP Version: %s\n", req->httpVersion);
@@ -193,22 +198,25 @@ void print_request(Request *req) {
   printf("Content: %s\n", req->body);
 }
 
-void fill_response(Response *res, int status, char *statusText, char *type,
-                   char *body) {
+void fill_response(Response* res,
+                   int status,
+                   char* statusText,
+                   char* type,
+                   char* body) {
   res->statusCode = status;
   strncpy_s(res->statusText, 100, statusText, _TRUNCATE);
   strncpy_s(res->contentType, 100, type, _TRUNCATE);
   strncpy_s(res->body, BUFFER_SIZE, body, _TRUNCATE);
 }
 
-void print_response(Response *res) {
+void print_response(Response* res) {
   printf("Status Code: %d\n", res->statusCode);
   printf("Status Text: %s\n", res->statusText);
   printf("Content Type: %s\n", res->contentType);
   printf("Content: %s\n", res->body);
 }
 
-void stringify_response(Response *res, char *resStr) {
+void stringify_response(Response* res, char* resStr) {
   char statusCode[4];
   sprintf_s(statusCode, 4, "%d", res->statusCode);
 
@@ -224,22 +232,27 @@ void stringify_response(Response *res, char *resStr) {
   printf("Response String:\n%s\n", resStr);
 }
 
-bool streq(char *s1, char *s2) { return strcmp(s1, s2) == 0; }
+bool streq(char* s1, char* s2) {
+  return strcmp(s1, s2) == 0;
+}
 
-bool parse_request(char *request, Request *req) {
-  char *token;
-  char *context;
+bool parse_request(char* request, Request* req) {
+  char* token;
+  char* context;
 
   token = strtok_s(request, " ", &context);
-  if (token == NULL) return false;
+  if (token == NULL)
+    return false;
   strncpy_s(req->method, SIZEMETHOD, token, _TRUNCATE);
 
   token = strtok_s(NULL, " ", &context);
-  if (token == NULL) return false;
+  if (token == NULL)
+    return false;
   strncpy_s(req->path, SIZEPATH, token, _TRUNCATE);
 
   token = strtok_s(NULL, "\r\n", &context);
-  if (token == NULL) return false;
+  if (token == NULL)
+    return false;
   strncpy_s(req->httpVersion, SIZEVERSION, token, _TRUNCATE);
 
   req->headers[0] = '\0';
@@ -260,20 +273,22 @@ bool parse_request(char *request, Request *req) {
   return true;
 }
 
-void file_extension(char *path, char *extension) {
-  char *token;
-  char *context;
+void file_extension(char* path, char* extension) {
+  char* token;
+  char* context;
 
   token = strtok_s(path, ".", &context);
-  if (token == NULL) return;
+  if (token == NULL)
+    return;
 
   token = strtok_s(NULL, ".", &context);
-  if (token == NULL) return;
+  if (token == NULL)
+    return;
 
   strncpy_s(extension, 10, token, _TRUNCATE);
 }
 
-char *mime_type(char *extension) {
+char* mime_type(char* extension) {
   if (streq(extension, "html") || streq(extension, "htm"))
     return "text/html";
   else if (streq(extension, "css"))
@@ -298,6 +313,6 @@ char *mime_type(char *extension) {
     return "application/octet-stream";
 }
 
-bool is_static(Request *req) {
+bool is_static(Request* req) {
   return streq(req->method, "GET") && strncmp(req->path, "/static/", 8) == 0;
 }
