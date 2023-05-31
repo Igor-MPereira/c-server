@@ -12,6 +12,10 @@
     "bit": "c",
     "compare": "c",
     "cmath": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "stdbool.h": "c",
+    "response.h": "c",
+    "unordered_map": "cpp",
+    "http.h": "c"
   }
 }

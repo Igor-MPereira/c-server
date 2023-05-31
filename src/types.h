@@ -28,6 +28,8 @@ typedef int64_t i64;
 #define kB(value) ((value)*1024LL)
 #define mB(value) (kB(value) * 1024LL)
 
+#define BUFFER_SIZE kB(16)
+
 #define assert(expression, message, ...)                                      \
   if (!(expression)) {                                                        \
     printf("Assertion failed: %s, line %d, file %s\n", #expression, __LINE__, \

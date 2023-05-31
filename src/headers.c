@@ -1,4 +1,5 @@
 #include "headers.h"
+#include "hashed_file_extensions.h"
 #include "string.h"
 
 Headers* headers_new() {
@@ -117,3 +118,54 @@ void headers_print(Headers* h) {
     header = header->next;
   }
 }
+
+char* headers_stringify(Headers* h) {
+  char* string = (char*)malloc(HEADER_MAX_SIZE);
+  Header* header = h->first;
+
+  while (header) {
+    strcat_s(string, HEADER_MAX_SIZE, header->key);
+    strcat_s(string, HEADER_MAX_SIZE, ": ");
+    strcat_s(string, HEADER_MAX_SIZE, header->value);
+    strcat_s(string, HEADER_MAX_SIZE, "\r\n");
+    header = header->next;
+  }
+
+  return string;
+}
+
+const char* mime_type(const char* path) {
+  const char* last_dot = strrchr(path, '.');
+
+  if (!last_dot)
+    return "text/plain";
+
+  switch (hash(last_dot + 1)) {
+    case HTML:
+      return "text/html";
+    case CSS:
+      return "text/css";
+    case JS:
+    case MJS:
+    case CJS:
+      return "application/javascript";
+    case PNG:
+      return "image/png";
+    case JPG:
+    case JPEG:
+      return "image/jpeg";
+    case ICO:
+      return "image/x-icon";
+    case GIF:
+      return "image/gif";
+    case SVG:
+      return "image/svg+xml";
+    case TXT:
+      return "text/plain";
+    case WEBP:
+      return "image/webp";
+    case JSON:
+      return "application/json";
+    default:
+      return "application/octet-stream";
+  }

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <winsock2.h>
 
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE /* 2 ** 15 */ 32768
 
 typedef struct sockaddr t_sockaddr;
 typedef struct sockaddr_in t_sockaddr_in;

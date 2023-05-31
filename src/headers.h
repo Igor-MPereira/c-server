@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types.h"
-
+#define HEADER_MAX_SIZE kB(4)
 typedef struct Header {
   char* key;
   char* value;
@@ -54,3 +54,10 @@ void headers_set(Headers* headers, char* key, char* value);
 /// @brief Print the headers.
 /// @param headers The headers.
 void headers_print(Headers* headers);
+
+/// @brief Stringify the headers to a string.
+/// @param headers The headers.
+/// @return The string.
+char* headers_stringify(Headers* headers);
+
+const char* mime_type(const char* path);
