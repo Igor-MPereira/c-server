@@ -1,4 +1,7 @@
 #include "headers.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "hash.h"
 #include "hashed_file_extensions.h"
 #include "string.h"
 
@@ -27,13 +30,12 @@ void headers_destroy(Headers* h) {
 
 void headers_add(Headers* h, char* key, char* value) {
   Header* header = (Header*)malloc(sizeof(Header));
-
   header->key = key;
   header->value = value;
   header->next = null;
   header->prev = null;
 
-  if (h->first) {
+  if (!h->first) {
     h->first = header;
     h->last = header;
   } else {
@@ -100,6 +102,7 @@ void headers_set(Headers* h, char* key, char* value) {
 
   while (header) {
     if (streq(header->key, key)) {
+      free(header->value);
       header->value = value;
       return;
     }
@@ -110,11 +113,15 @@ void headers_set(Headers* h, char* key, char* value) {
   headers_add(h, key, value);
 }
 
+void header_print(Header* header) {
+  printf("\t\t%s: %s\n", header->key, header->value);
+}
+
 void headers_print(Headers* h) {
   Header* header = h->first;
 
   while (header) {
-    printf("%s: %s\n", header->key, header->value);
+    header_print(header);
     header = header->next;
   }
 }
@@ -123,6 +130,7 @@ char* headers_stringify(Headers* h) {
   char* string = (char*)malloc(HEADER_MAX_SIZE);
   Header* header = h->first;
 
+  string[0] = '\0';
   while (header) {
     strcat_s(string, HEADER_MAX_SIZE, header->key);
     strcat_s(string, HEADER_MAX_SIZE, ": ");
@@ -169,3 +177,19 @@ const char* mime_type(const char* path) {
     default:
       return "application/octet-stream";
   }
+}
+
+void headers_parse(Headers* h, char* ctx) {
+  char* line_ctx;
+  char* line = strtok_s(ctx, "\r\n", &ctx);
+
+  while (line && !(line[0] == '\0' || line[0] == '\r' ||
+                   (line[0] == '\n' && line[1] == '\0'))) {
+    char* key = strtok_s(line, ": ", &line_ctx);
+    char* value = strtok(++line_ctx, "\r\n");
+
+    headers_add(h, key, value);
+
+    line = strtok_s(ctx, "\r\n", &ctx);
+  }
+}

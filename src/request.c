@@ -1,5 +1,6 @@
 #include "request.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "hash.h"
 #include "string.h"
 
@@ -17,21 +18,7 @@ void request_destroy(Request* r) {
   free(r);
 }
 
-void request_parse_headers(Request* r, char* reqStr) {
-  char* line = strtok(reqStr, "\r\n");
-
-  while (line && !(line[0] == '\0' || line[0] == '\r' ||
-                   (line[0] == '\n' && line[1] == '\0'))) {
-    char* key = strtok(line, ":");
-    char* value = strtok(null, ":");
-
-    headers_add(r->headers, key, value);
-
-    line = strtok(null, "\r\n");
-  }
-}
-
-void request_parse_body(Request* r, char* reqStr) {
+void request_parse_body(Request* r) {
   char* contentLength = headers_get(r->headers, "Content-Length");
 
   if (contentLength) {
@@ -42,7 +29,8 @@ void request_parse_body(Request* r, char* reqStr) {
 }
 
 void request_parse(Request* r, char* reqStr) {
-  char* line = strtok(reqStr, "\r\n");
+  char* ctx;
+  char* line = strtok_s(reqStr, "\r\n", &ctx);
   char* method = strtok(line, " ");
   char* path = strtok(null, " ");
   char* httpVersion = strtok(null, " ");
@@ -51,16 +39,17 @@ void request_parse(Request* r, char* reqStr) {
   strcpy(r->path, path);
   strcpy(r->http_version, httpVersion);
 
-  request_parse_headers(r, null);
+  headers_parse(r->headers, ctx);
 
-  request_parse_body(r, null);
+  request_parse_body(r);
 }
 
 void request_print(Request* r) {
-  printf("Method: %s\n", r->method);
-  printf("Path: %s\n", r->path);
-  printf("HTTP Version: %s\n", r->http_version);
-  printf("Headers:\n");
+  printf("Request:\n");
+  printf("\tMethod: %s\n", r->method);
+  printf("\tPath: %s\n", r->path);
+  printf("\tVersion: %s\n", r->http_version);
+  printf("\tHeaders:\n");
   headers_print(r->headers);
-  printf("Body: %s\n", r->body);
+  printf("\tBody: %s\n", r->body);
 }

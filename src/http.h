@@ -14,7 +14,18 @@
 #define win_WSAStart()
 #endif
 
+#include "request.h"
+#include "response.h"
+
 typedef struct sockaddr t_sockaddr;
 typedef struct sockaddr_in t_sockaddr_in;
 
-int listen_socket(SOCKET* sSock, int port);
+SOCKET listen_socket(int port);
+
+SOCKET accept_socket(SOCKET sSock);
+
+Request* recv_request(SOCKET cSock);
+
+int send_response(SOCKET cSock, Response* response);
+
+SOCKET http_server(int port);

@@ -18,6 +18,4 @@ void strrep(char* str, const char* toReplace, const char replaceWith) {
         str[i] = replaceWith;
         break;
       }
-
-  return str;
 }

@@ -55,9 +55,18 @@ void headers_set(Headers* headers, char* key, char* value);
 /// @param headers The headers.
 void headers_print(Headers* headers);
 
+/// @brief Print single header.
+/// @param header The header.
+void header_print(Header* header);
+
 /// @brief Stringify the headers to a string.
 /// @param headers The headers.
 /// @return The string.
 char* headers_stringify(Headers* headers);
+
+/// @brief Parse a string to headers.
+/// @param headers The headers.
+/// @param ctx The string.
+void headers_parse(Headers* headers, char* ctx);
 
 const char* mime_type(const char* path);

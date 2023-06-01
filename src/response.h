@@ -28,11 +28,15 @@ void response_parse(Response* response, char* string);
 
 /// @brief Stringify a response to a string.
 /// @param response The response.
+/// @param string The string.
+/// @param size The size of the string.
 /// @return The string.
-char* response_stringify(Response* response);
+char* response_stringify(Response* response, char** string, size_t* size);
 
 #define SIZEOF_VERSION 9
 #define SIZEOF_STATUS_CODE 4
 #define SIZEOF_NEWLINE 2
 
 size_t response_size(Response* response, char** headers);
+
+void response_set_body(Response* response, char* body);

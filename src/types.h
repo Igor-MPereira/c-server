@@ -7,7 +7,6 @@ typedef float f32;
 typedef double f64;
 typedef long double f128;
 
-typedef int8_t byte;
 typedef uint8_t ubyte;
 
 typedef uint8_t u8;
