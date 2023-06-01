@@ -17,7 +17,7 @@ Response* response_new() {
 void response_destroy(Response* response) {
   headers_destroy(response->headers);
   free(response->body);
-  free(response);
+  // free(response);
 }
 
 void response_print(Response* response) {

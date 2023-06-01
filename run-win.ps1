@@ -6,6 +6,7 @@ gcc -o server.exe `
   .\src\hash.c `
   .\src\headers.c `
   .\src\string.c `
+  .\src\route.c `
   -lws2_32 `
   -Wall -Wextra `
   -std=c99 `

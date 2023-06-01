@@ -1,5 +1,6 @@
 #include "http.h"
 #include <stdio.h>
+#include "route.h"
 
 SOCKET listen_socket(int port) {
   SOCKET sSock;
@@ -66,7 +67,6 @@ Request* recv_request(SOCKET cSock) {
   }
 
   printf("Received %d bytes.\n\n", bytes_received);
-  printf("Data:\n\n%s\n", buffer);
 
   request_parse(request, buffer);
 
@@ -91,7 +91,7 @@ int send_response(SOCKET cSock, Response* response) {
   return 0;
 }
 
-SOCKET http_server(int port) {
+SOCKET http_server(int port, void (*onload)()) {
   SOCKET sSock = listen_socket(port);
 
   if (sSock == INVALID_SOCKET) {
@@ -99,7 +99,7 @@ SOCKET http_server(int port) {
     return 1;
   }
 
-  printf("Running ...\n\nListening on  http://localhost:%d ...\n\n", port);
+  onload();
 
   while (1) {
     SOCKET cSock = accept_socket(sSock);
@@ -118,23 +118,14 @@ SOCKET http_server(int port) {
       return 1;
     }
 
-    request_print(request);
-
-    Response* response = response_new();
-    response->status_code = 200;
-    strcpy(response->status_text, "OK");
-    headers_add(response->headers, "Content-Type", "text/html");
-    response_set_body(response, "<h1>Hello, World!</h1>");
-
-    response_print(response);
+    Response* response = router_route(request);
 
     send_response(cSock, response);
 
-    // wtf
-    // request_destroy(request);
-    // response_destroy(response);
-
     closesocket(cSock);
+
+    request_destroy(request);
+    response_destroy(response);
   }
 
   closesocket(sSock);

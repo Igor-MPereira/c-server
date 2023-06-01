@@ -28,4 +28,4 @@ Request* recv_request(SOCKET cSock);
 
 int send_response(SOCKET cSock, Response* response);
 
-SOCKET http_server(int port);
+SOCKET http_server(int port, void (*onload)());
