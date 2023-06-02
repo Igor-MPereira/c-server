@@ -8,22 +8,20 @@ void router_init() {
   router.length = 0;
 }
 
-void print_routes() {
-  printf("Routes:\n");
-  for (int i = 0; i < router.length; i++)
-    printf("\t%s %s\n", router.routes[i].method, router.routes[i].path);
-}
-
-void router_add(char* path, char* method, route_handler cb) {
+void router_add_api(char* path, char* method, route_handler cb) {
   Route* route = (Route*)malloc(ROUTESIZE);
+  ApiRoute* api_route = (ApiRoute*)malloc(API_ROUTESIZE);
 
-  route->path = (char*)malloc(strlen(path) + 1);
-  strcpy(route->path, path);
+  api_route->path = (char*)malloc(strlen(path) + 1);
+  strcpy(api_route->path, path);
 
-  route->method = (char*)malloc(strlen(method) + 1);
-  strcpy(route->method, method);
+  api_route->method = (char*)malloc(strlen(method) + 1);
+  strcpy(api_route->method, method);
 
-  route->callback = cb;
+  api_route->callback = cb;
+
+  route->api_route = api_route;
+  route->is_static = false;
 
   router.length++;
 
@@ -36,18 +34,20 @@ void router_add(char* path, char* method, route_handler cb) {
 }
 
 void get(char* path, route_handler cb) {
-  router_add(path, "GET", cb);
+  router_add_api(path, "GET", cb);
 }
 
 void post(char* path, route_handler cb) {
-  router_add(path, "POST", cb);
+  router_add_api(path, "POST", cb);
 }
 
 void router_route(Request* req, Response* res) {
   for (int i = 0; i < router.length; i++) {
     Route route = router.routes[i];
-    if (streq(route.path, req->path) && streq(route.method, req->method))
-      return route.callback(req, res);
+
+    if (route.is_static && streq(route.api_route->path, req->path) &&
+        streq(route.api_route->method, req->method))
+      return route.api_route->callback(req, res);
   }
 
   response_set_status(res, 404, "Not Found");
