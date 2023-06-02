@@ -3,10 +3,12 @@
 #include "request.h"
 #include "response.h"
 
+typedef void (*route_handler)(Request*, Response*);
+
 typedef struct {
   char* path;
   char* method;
-  Response* (*callback)(Request*);
+  route_handler callback;
 } Route;
 
 #define ROUTESIZE sizeof(Route)
@@ -22,19 +24,19 @@ static Router router;
 
 void router_init();
 void print_routes();
-void router_add(char* path, char* method, Response* (*cb)(Request*));
-void get(char* path, Response* (*cb)(Request*));
-void post(char* path, Response* (*cb)(Request*));
+void router_add(char* path, char* method, route_handler callback);
+void get(char* path, route_handler callback);
+void post(char* path, route_handler callback);
 /*
 TODO: Implement these methods.
 
-  void put(char* path, void (*cb)(Request*, Response*));
-  void patch(char* path, void (*cb)(Request*, Response*));
-  void del(char* path, void (*cb)(Request*, Response*));
-  void head(char* path, void (*cb)(Request*, Response*));
-  void options(char* path, void (*cb)(Request*, Response*));
-  void trace(char* path, void (*cb)(Request*, Response*));
-  void connect(char* path, void (*cb)(Request*, Response*));
+  void put(char* path, route_handler callback);
+  void patch(char* path, route_handler callback);
+  void del(char* path, route_handler callback);
+  void head(char* path, route_handler callback);
+  void options(char* path, route_handler callback);
+  void trace(char* path, route_handler callback);
+  void connect(char* path, route_handler callback);
 */
 
-Response * router_route(Request* req);
+void router_route(Request* req, Response* res);

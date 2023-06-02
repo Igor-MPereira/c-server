@@ -28,10 +28,10 @@ void headers_destroy(Headers* h) {
   free(h);
 }
 
-void headers_add(Headers* h, char* key, char* value) {
+void headers_add(Headers* h, const char* key, const char* value) {
   Header* header = (Header*)malloc(sizeof(Header));
-  header->key = key;
-  header->value = value;
+  header->key = strdup(key);
+  header->value = strdup(value);
   header->next = null;
   header->prev = null;
 

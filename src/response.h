@@ -21,11 +21,6 @@ void response_destroy(Response* response);
 /// @param response The response.
 void response_print(Response* response);
 
-/// @brief Parse a response from a string.
-/// @param response The response.
-/// @param string The string.
-void response_parse(Response* response, char* string);
-
 /// @brief Stringify a response to a string.
 /// @param response The response.
 /// @param string The string.
@@ -40,3 +35,6 @@ char* response_stringify(Response* response, char** string, size_t* size);
 size_t response_size(Response* response, char** headers);
 
 void response_set_body(Response* response, char* body);
+void response_set_status(Response* response,
+                         int status_code,
+                         char* status_text);

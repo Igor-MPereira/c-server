@@ -17,7 +17,7 @@ Response* response_new() {
 void response_destroy(Response* response) {
   headers_destroy(response->headers);
   free(response->body);
-  // free(response);
+  free(response);
 }
 
 void response_print(Response* response) {
@@ -27,34 +27,6 @@ void response_print(Response* response) {
   printf("\tHeaders:\n");
   headers_print(response->headers);
   printf("\tBody: \n\t\t%s\n", response->body);
-}
-
-void response_parse(Response* response, char* string) {
-  char* token;
-  char* context;
-
-  token = strtok_s(string, " ", &context);
-  if (!token)
-    return;
-  response->status_code = atoi(token);
-
-  token = strtok(null, " ");
-  if (!token)
-    return;
-  strncpy_s(response->status_text, 16, token, _TRUNCATE);
-
-  token = strtok(null, "\r\n");
-  if (!token)
-    return;
-
-  headers_parse(response->headers, context);
-
-  token = strtok(null, "\r\n");
-  if (!token)
-    return;
-
-  response->body = malloc(strlen(token) + 1);
-  strcpy_s(response->body, strlen(token) + 1, token);
 }
 
 char* response_stringify(Response* response, char** string, size_t* size) {
@@ -85,4 +57,11 @@ void response_set_body(Response* response, char* body) {
   strcpy_s(response->body, size + 1, body);
   sprintf_s(con_len, 7, "%d", size);
   headers_set(response->headers, "Content-Length", con_len);
+}
+
+void response_set_status(Response* response,
+                         int status_code,
+                         char* status_text) {
+  response->status_code = status_code;
+  strcpy_s(response->status_text, 16, status_text);
 }

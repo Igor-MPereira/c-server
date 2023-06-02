@@ -14,7 +14,7 @@ void print_routes() {
     printf("\t%s %s\n", router.routes[i].method, router.routes[i].path);
 }
 
-void router_add(char* path, char* method, Response* (*cb)(Request*)) {
+void router_add(char* path, char* method, route_handler cb) {
   Route* route = (Route*)malloc(ROUTESIZE);
 
   route->path = (char*)malloc(strlen(path) + 1);
@@ -35,27 +35,22 @@ void router_add(char* path, char* method, Response* (*cb)(Request*)) {
   router.routes[router.length - 1] = *route;
 }
 
-void get(char* path, Response* (*cb)(Request*)) {
+void get(char* path, route_handler cb) {
   router_add(path, "GET", cb);
 }
 
-void post(char* path, Response* (*cb)(Request*)) {
+void post(char* path, route_handler cb) {
   router_add(path, "POST", cb);
 }
 
-Response* router_route(Request* req) {
+void router_route(Request* req, Response* res) {
   for (int i = 0; i < router.length; i++) {
     Route route = router.routes[i];
     if (streq(route.path, req->path) && streq(route.method, req->method))
-      return route.callback(req);
+      return route.callback(req, res);
   }
 
-  Response* res = response_new();
-
-  res->status_code = 404;
-  sprintf(res->status_text, "Not Found");
+  response_set_status(res, 404, "Not Found");
   headers_add(res->headers, "Content-Type", "text/html");
   response_set_body(res, "<h1>404 Not Found</h1>");
-
-  return res;
 }

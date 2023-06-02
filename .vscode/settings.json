@@ -16,6 +16,7 @@
     "stdbool.h": "c",
     "response.h": "c",
     "unordered_map": "cpp",
-    "http.h": "c"
+    "http.h": "c",
+    "file.h": "c"
   }
 }

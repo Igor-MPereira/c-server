@@ -26,7 +26,7 @@ void headers_destroy(Headers* headers);
 /// @param headers The headers.
 /// @param key The key of the header.
 /// @param value The value of the header.
-void headers_add(Headers* headers, char* key, char* value);
+void headers_add(Headers* headers, const char* key, const char* value);
 
 /// @brief Remove a header from the headers.
 /// @param headers The headers.

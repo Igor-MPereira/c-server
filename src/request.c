@@ -15,7 +15,7 @@ Request* request_new() {
 void request_destroy(Request* r) {
   headers_destroy(r->headers);
   free(r->body);
-  // free(r);
+  free(r);
 }
 
 void request_parse_body(Request* r) {

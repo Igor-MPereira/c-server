@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "src/http.h"
 #include "src/route.h"
+#include "src/file.h"
 
 void onload() {
   printf(
@@ -11,15 +12,8 @@ void onload() {
       "http://localhost:8080/\n");
 }
 
-Response* index() {
-  Response* res = response_new();
-
-  res->status_code = 200;
-  sprintf(res->status_text, "OK");
-  headers_add(res->headers, "Content-Type", "text/html");
-  response_set_body(res, "<h1>Hello, World!!</h1>");
-
-  return res;
+void index(Request* _, Response* res) {
+  serve_file("static/index.html", _, res);
 }
 
 int main(int argc, char** argv) {

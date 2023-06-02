@@ -118,7 +118,9 @@ SOCKET http_server(int port, void (*onload)()) {
       return 1;
     }
 
-    Response* response = router_route(request);
+    Response* response = response_new();
+
+    router_route(request, response);
 
     send_response(cSock, response);
 

@@ -6,4 +6,4 @@
 /// http://www.cse.yorku.ca/~oz/hash.html
 /// @param str string to be hashed
 /// @return unsigned integer hash value
-size_t hash(const char* str);
+int hash(const char* str);
