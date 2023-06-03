@@ -38,19 +38,21 @@ typedef struct {
 static Router router;
 
 void router_init();
-void router_add_api(char* path, char* method, route_handler callback);
-void get(char* path, route_handler callback);
-void post(char* path, route_handler callback);
-/*
-TODO: Implement these methods.
+void router_destroy();
 
-  void put(char* path, route_handler callback);
-  void patch(char* path, route_handler callback);
-  void del(char* path, route_handler callback);
-  void head(char* path, route_handler callback);
-  void options(char* path, route_handler callback);
-  void trace(char* path, route_handler callback);
-  void connect(char* path, route_handler callback);
-*/
+void serve_static(char* base_path, char* dir);
+void handle_static(StaticRoute* route, Request* req, Response* res);
+
+void router_add_api(char* path, char* method, route_handler callback);
+
+void route_get(char* path, route_handler callback);
+void route_post(char* path, route_handler callback);
+void route_put(char* path, route_handler callback);
+void route_patch(char* path, route_handler callback);
+void route_delete(char* path, route_handler callback);
+void route_head(char* path, route_handler callback);
+void route_options(char* path, route_handler callback);
+void route_trace(char* path, route_handler callback);
+void route_connect(char* path, route_handler callback);
 
 void router_route(Request* req, Response* res);

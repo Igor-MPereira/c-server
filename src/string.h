@@ -28,3 +28,10 @@ void strrep(char* str, const char* toReplace, const char replaceWith);
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
 #endif
+
+#ifdef _WIN32
+
+char* strcasestr(const char* haystack, const char* needle);
+char* strncasestr(const char* haystack, const char* needle, size_t n);
+
+#endif

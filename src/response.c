@@ -51,12 +51,17 @@ size_t response_size(Response* response, char** headers) {
 
 void response_set_body(Response* response, char* body) {
   size_t size = strlen(body);
-  char* con_len = malloc(7);
   free(response->body);
+
   response->body = malloc(size + 1);
   strcpy_s(response->body, size + 1, body);
+
+  char* con_len = malloc(7);
   sprintf_s(con_len, 7, "%d", size);
+
   headers_set(response->headers, "Content-Length", con_len);
+
+  free(con_len);
 }
 
 void response_set_status(Response* response,

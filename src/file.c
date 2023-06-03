@@ -28,3 +28,24 @@ void serve_file(const char* path, Request* req, Response* res) {
 
   free(buffer);
 }
+
+bool open_file(const char* path, FILE** file) {
+  *file = fopen(path, "rb");
+
+  if (*file == null)
+    return false;
+
+  return true;
+}
+
+size_t file_size(FILE* file) {
+  fseek(file, 0, SEEK_END);
+  size_t size = ftell(file);
+  fseek(file, 0, SEEK_SET);
+
+  return size;
+}
+
+void readfile(FILE* file, char* buffer, size_t size) {
+  fread(buffer, 1, size, file);
+}

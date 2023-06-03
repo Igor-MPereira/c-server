@@ -10,7 +10,6 @@ gcc -o server.exe `
   .\src\file.c `
   -lws2_32 `
   -Wall -Wextra `
-  -std=c99 `
   -O3
 
 ./server 8080

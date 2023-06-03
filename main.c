@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include "src/file.h"
 #include "src/http.h"
 #include "src/route.h"
-#include "src/file.h"
 
 void onload() {
   printf(
@@ -12,8 +12,26 @@ void onload() {
       "http://localhost:8080/\n");
 }
 
-void index(Request* _, Response* res) {
+void Index(Request* _, Response* res) {
   serve_file("static/index.html", _, res);
+}
+
+void Users(Request* _, Response* res) {
+  response_set_status(res, 200, "OK");
+  headers_add(res->headers, "Content-Type", "application/json");
+  response_set_body(res,
+                    "{\"users\": ["
+                    "{\"name\": \"John Doe\", \"age\": 30},"
+                    "{\"name\": \"Jane Doe\", \"age\": 25}"
+                    "]}");
+}
+
+void PostUsers(Request* req, Response* res) {
+  request_print(req);
+
+  response_set_status(res, 200, "OK");
+  headers_add(res->headers, "Content-Type", "application/json");
+  response_set_body(res, "{\"message\": \"User created\"}");
 }
 
 int main(int argc, char** argv) {
@@ -26,9 +44,15 @@ int main(int argc, char** argv) {
 
   router_init();
 
-  get("/", index);
+  serve_static("/static", "static");
+
+  route_get("/", Index);
+  route_get("/users", Users);
+  route_post("/users", PostUsers);  
 
   sSock = http_server(atoi(argv[1]), onload);
+
+  router_destroy();
 
   if (sSock == INVALID_SOCKET)
     return 1;

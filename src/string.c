@@ -19,3 +19,34 @@ void strrep(char* str, const char* toReplace, const char replaceWith) {
         break;
       }
 }
+
+#ifdef _WIN32
+
+char* strcasestr(const char* haystack, const char* needle) {
+  size_t len = strlen(needle);
+
+  while (*haystack) {
+    if (strncasecmp(haystack, needle, len) == 0)
+      return (char*)haystack;
+
+    haystack++;
+  }
+
+  return null;
+}
+
+char* strncasestr(const char* haystack, const char* needle, size_t n) {
+  size_t len = strlen(needle);
+
+  while (*haystack && n >= len) {
+    if (strncasecmp(haystack, needle, len) == 0)
+      return (char*)haystack;
+
+    haystack++;
+    n--;
+  }
+
+  return null;
+}
+
+#endif
