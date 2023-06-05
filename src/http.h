@@ -28,4 +28,6 @@ Request* recv_request(SOCKET cSock);
 
 int send_response(SOCKET cSock, Response* response);
 
-SOCKET http_server(int port, void (*onload)());
+SOCKET http_server(int port, void (*onload)(), bool cors);
+
+void enable_cors(bool enable, Headers* headers);

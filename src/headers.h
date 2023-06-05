@@ -67,6 +67,6 @@ char* headers_stringify(Headers* headers);
 /// @brief Parse a string to headers.
 /// @param headers The headers.
 /// @param ctx The string.
-void headers_parse(Headers* headers, char* ctx);
+void headers_parse(Headers* headers, char** ctx);
 
 const char* mime_type(const char* path);

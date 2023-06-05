@@ -91,7 +91,7 @@ int send_response(SOCKET cSock, Response* response) {
   return 0;
 }
 
-SOCKET http_server(int port, void (*onload)()) {
+SOCKET http_server(int port, void (*onload)(), bool cors) {
   SOCKET sSock = listen_socket(port);
 
   if (sSock == INVALID_SOCKET) {
@@ -122,6 +122,8 @@ SOCKET http_server(int port, void (*onload)()) {
 
     router_route(request, response);
 
+    enable_cors(cors, response->headers);
+
     send_response(cSock, response);
 
     closesocket(cSock);
@@ -134,4 +136,10 @@ SOCKET http_server(int port, void (*onload)()) {
   WSACleanup();
 
   return 0;
+}
+
+void enable_cors(bool enable, Headers* headers) {
+  if (enable) {
+    headers_set(headers, "Access-Control-Allow-Origin", "*");
+  }
 }

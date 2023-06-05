@@ -140,18 +140,14 @@ void router_route(Request* req, Response* res) {
       if (!(streq(req->method, "GET") || streq(req->method, "HEAD")))
         continue;
 
-      handle_static(route.static_route, req, res);
-      return;
+      return handle_static(route.static_route, req, res);
     }
 
     if (!streq(req->method, route.api_route->method))
       continue;
 
-    if (strcasecmp(req->path, route.api_route->path) == 0) {
-      printf("Route: %s %s\n", req->method, req->path);
-      route.api_route->callback(req, res);
-      return;
-    }
+    if (strcaseeq(req->path, route.api_route->path))
+      return route.api_route->callback(req, res);
   }
 
   response_set_status(res, 404, "Not Found");

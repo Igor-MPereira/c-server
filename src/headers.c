@@ -179,17 +179,45 @@ const char* mime_type(const char* path) {
   }
 }
 
-void headers_parse(Headers* h, char* ctx) {
-  char* line_ctx;
-  char* line = strtok_s(ctx, "\r\n", &ctx);
+void escprintf(const char* str) {
+  while (*str) {
+    switch (*str) {
+      case '\n':
+        printf("\\n");
+        break;
+      case '\r':
+        printf("\\r");
+        break;
+      case '\t':
+        printf("\\t");
+        break;
+      default:
+        printf("%c", *str);
+        break;
+    }
 
-  while (line && !(line[0] == '\0' || line[0] == '\r' ||
-                   (line[0] == '\n' && line[1] == '\0'))) {
+    str++;
+  }
+
+  printf("\n");
+}
+
+void headers_parse(Headers* h, char** ctx) {
+  char* line_ctx;
+  char* line = strtok_s(*ctx, "\r\n", ctx);
+
+  while (line) {
     char* key = strtok_s(line, ": ", &line_ctx);
     char* value = strtok(++line_ctx, "\r\n");
 
     headers_add(h, key, value);
 
-    line = strtok_s(ctx, "\r\n", &ctx);
+    // removes leading \n
+    (*ctx)++;
+
+    if (strneq(*ctx, "\r\n", 2))
+      break;
+
+    line = strtok_s(*ctx, "\r\n", ctx);
   }
 }

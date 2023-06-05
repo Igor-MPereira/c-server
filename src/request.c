@@ -18,13 +18,13 @@ void request_destroy(Request* r) {
   free(r);
 }
 
-void request_parse_body(Request* r) {
+void request_parse_body(Request* r, char* ctx) {
   char* contentLength = headers_get(r->headers, "Content-Length");
 
   if (contentLength) {
     int length = atoi(contentLength);
     r->body = (char*)malloc(length + 1);
-    strcpy(r->body, strtok(null, "\r\n"));
+    strcpy(r->body, ctx);
   }
 }
 
@@ -39,9 +39,9 @@ void request_parse(Request* r, char* reqStr) {
   strcpy(r->path, path);
   strcpy(r->http_version, httpVersion);
 
-  headers_parse(r->headers, ctx);
+  headers_parse(r->headers, &ctx);
 
-  request_parse_body(r);
+  request_parse_body(r, ctx);
 }
 
 void request_print(Request* r) {

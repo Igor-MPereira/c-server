@@ -15,6 +15,6 @@ void request_destroy(Request* request);
 
 void request_parse(Request* request, char* buffer);
 
-void request_parse_body(Request* request);
+void request_parse_body(Request* request, char* ctx);
 
 void request_print(Request* request);

@@ -27,11 +27,15 @@ void Users(Request* _, Response* res) {
 }
 
 void PostUsers(Request* req, Response* res) {
-  request_print(req);
-
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User created\"}");
+}
+
+void PutUsers(Request* req, Response* res) {
+  response_set_status(res, 200, "OK");
+  headers_add(res->headers, "Content-Type", "application/json");
+  response_set_body(res, "{\"message\": \"User updated\"}");
 }
 
 int main(int argc, char** argv) {
@@ -48,9 +52,10 @@ int main(int argc, char** argv) {
 
   route_get("/", Index);
   route_get("/users", Users);
-  route_post("/users", PostUsers);  
+  route_post("/users", PostUsers);
+  route_put("/users", PutUsers);
 
-  sSock = http_server(atoi(argv[1]), onload);
+  sSock = http_server(atoi(argv[1]), onload, true);
 
   router_destroy();
 
