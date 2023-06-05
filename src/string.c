@@ -50,8 +50,6 @@ bool strncaseeq(const char* s1, const char* s2, size_t n) {
   return strncasecmp(s1, s2, n) == 0;
 }
 
-#ifdef _WIN32
-
 /// @brief Case insensitive string search.
 /// @param haystack The string to search in.
 /// @param needle The string to search for.
@@ -69,5 +67,3 @@ char* strcasestr(const char* haystack, const char* needle) {
 
   return null;
 }
-
-#endif

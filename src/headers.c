@@ -127,15 +127,15 @@ void headers_print(Headers* h) {
 }
 
 char* headers_stringify(Headers* h) {
-  char* string = (char*)malloc(HEADER_MAX_SIZE);
+  char* string = (char*)malloc(HEADER_MAX_SIZE + 1);
   Header* header = h->first;
 
   string[0] = '\0';
   while (header) {
-    strcat_s(string, HEADER_MAX_SIZE, header->key);
-    strcat_s(string, HEADER_MAX_SIZE, ": ");
-    strcat_s(string, HEADER_MAX_SIZE, header->value);
-    strcat_s(string, HEADER_MAX_SIZE, "\r\n");
+    strncat(string, header->key, HEADER_MAX_SIZE);
+    strcat(string, ": ");
+    strncat(string, header->value, HEADER_MAX_SIZE);
+    strcat(string, "\r\n");
     header = header->next;
   }
 
@@ -179,35 +179,12 @@ const char* mime_type(const char* path) {
   }
 }
 
-void escprintf(const char* str) {
-  while (*str) {
-    switch (*str) {
-      case '\n':
-        printf("\\n");
-        break;
-      case '\r':
-        printf("\\r");
-        break;
-      case '\t':
-        printf("\\t");
-        break;
-      default:
-        printf("%c", *str);
-        break;
-    }
-
-    str++;
-  }
-
-  printf("\n");
-}
-
 void headers_parse(Headers* h, char** ctx) {
   char* line_ctx;
-  char* line = strtok_s(*ctx, "\r\n", ctx);
+  char* line = strtok_r(*ctx, "\r\n", ctx);
 
   while (line) {
-    char* key = strtok_s(line, ": ", &line_ctx);
+    char* key = strtok_r(line, ": ", &line_ctx);
     char* value = strtok(++line_ctx, "\r\n");
 
     headers_add(h, key, value);
@@ -218,6 +195,6 @@ void headers_parse(Headers* h, char** ctx) {
     if (strneq(*ctx, "\r\n", 2))
       break;
 
-    line = strtok_s(*ctx, "\r\n", ctx);
+    line = strtok_r(*ctx, "\r\n", ctx);
   }
 }

@@ -34,8 +34,8 @@ char* response_stringify(Response* response, char** string, size_t* size) {
   *size = response_size(response, &headers);
   *string = malloc(*size);
 
-  sprintf_s(*string, *size, "HTTP/1.1 %d %s\r\n%s\r\n%s", response->status_code,
-            response->status_text, headers, response->body);
+  snprintf(*string, *size, "HTTP/1.1 %d %s\r\n%s\r\n%s", response->status_code,
+           response->status_text, headers, response->body);
 
   free(headers);
 
@@ -54,10 +54,10 @@ void response_set_body(Response* response, char* body) {
   free(response->body);
 
   response->body = malloc(size + 1);
-  strcpy_s(response->body, size + 1, body);
+  strncpy(response->body, body, size + 1);
 
-  char* con_len = malloc(7);
-  sprintf_s(con_len, 7, "%d", size);
+  char* con_len = malloc(20);
+  snprintf(con_len, 20, "%ld", size);
 
   headers_set(response->headers, "Content-Length", con_len);
 
@@ -65,8 +65,8 @@ void response_set_body(Response* response, char* body) {
 }
 
 void response_set_status(Response* response,
-                         int status_code,
+                         u16 status_code,
                          char* status_text) {
   response->status_code = status_code;
-  strcpy_s(response->status_text, 16, status_text);
+  strncpy(response->status_text, status_text, 15);
 }

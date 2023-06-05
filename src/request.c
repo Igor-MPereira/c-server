@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
+#define _GNU_SOURCE
+#include <string.h>
 #include "string.h"
 
 Request* request_new() {
@@ -22,7 +24,7 @@ void request_parse_body(Request* r, char* ctx) {
   char* contentLength = headers_get(r->headers, "Content-Length");
 
   if (contentLength) {
-    int length = atoi(contentLength);
+    i32 length = atoi(contentLength);
     r->body = (char*)malloc(length + 1);
     strcpy(r->body, ctx);
   }
@@ -30,7 +32,7 @@ void request_parse_body(Request* r, char* ctx) {
 
 void request_parse(Request* r, char* reqStr) {
   char* ctx;
-  char* line = strtok_s(reqStr, "\r\n", &ctx);
+  char* line = strtok_r(reqStr, "\r\n", &ctx);
   char* method = strtok(line, " ");
   char* path = strtok(null, " ");
   char* httpVersion = strtok(null, " ");

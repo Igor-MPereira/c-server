@@ -32,7 +32,7 @@ typedef struct {
 
 typedef struct {
   Route* routes;
-  int length;
+  size_t length;
 } Router;
 
 static Router router;
@@ -40,19 +40,19 @@ static Router router;
 void router_init();
 void router_destroy();
 
-void serve_static(char* base_path, char* dir);
+void serve_static(const char* base_path, const char* dir);
 void handle_static(StaticRoute* route, Request* req, Response* res);
 
-void router_add_api(char* path, char* method, route_handler callback);
+void router_add_api(const char* path, const char* method, route_handler callback);
 
-void route_get(char* path, route_handler callback);
-void route_post(char* path, route_handler callback);
-void route_put(char* path, route_handler callback);
-void route_patch(char* path, route_handler callback);
-void route_delete(char* path, route_handler callback);
-void route_head(char* path, route_handler callback);
-void route_options(char* path, route_handler callback);
-void route_trace(char* path, route_handler callback);
-void route_connect(char* path, route_handler callback);
+void route_get(const char* path, route_handler callback);
+void route_post(const char* path, route_handler callback);
+void route_put(const char* path, route_handler callback);
+void route_patch(const char* path, route_handler callback);
+void route_delete(const char* path, route_handler callback);
+void route_head(const char* path, route_handler callback);
+void route_options(const char* path, route_handler callback);
+void route_trace(const char* path, route_handler callback);
+void route_connect(const char* path, route_handler callback);
 
 void router_route(Request* req, Response* res);

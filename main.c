@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "src/file.h"
 #include "src/http.h"
 #include "src/route.h"

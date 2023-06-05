@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string.h>
+#include <strings.h>
 #include "types.h"
 
 /// @brief Compares two strings.
@@ -35,15 +36,17 @@ bool strcaseeq(const char* s1, const char* s2);
 /// @return true if the substrings are equal, false otherwise
 bool strncaseeq(const char* s1, const char* s2, size_t n);
 
+char* strcasestr(const char* haystack, const char* needle);
+
+#ifdef _WIN32
+
+#define strtok_r strtok_s
+
 // if it's MSVC we need to implement strcasecmp and strncasecmp using _stricmp
 // and _strnicmp
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
 #endif
-
-#ifdef _WIN32
-
-char* strcasestr(const char* haystack, const char* needle);
 
 #endif

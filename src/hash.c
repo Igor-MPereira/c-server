@@ -1,7 +1,7 @@
 #include "hash.h"
 
-int hash(const char* str) {
-  int hash = 0;
+u32 hash(const char* str) {
+  u32 hash = 0;
   size_t len = strlen(str);
 
   for (size_t i = 0; i < len; i++) {

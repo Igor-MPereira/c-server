@@ -2,6 +2,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 typedef float f32;
 typedef double f64;
@@ -20,7 +21,6 @@ typedef int32_t i32;
 typedef int64_t i64;
 
 #define null 0
-#define null_ptr ((void*)0)
 
 #define array_count(array) (sizeof(array) / sizeof(array[0]))
 

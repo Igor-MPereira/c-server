@@ -10,7 +10,7 @@ void router_init() {
 }
 
 void router_destroy() {
-  for (int i = 0; i < router.length; i++) {
+  for (u64 i = 0; i < router.length; i++) {
     Route* route = &router.routes[i];
 
     if (!route->is_static) {
@@ -29,7 +29,7 @@ void router_destroy() {
   free(router.routes);
 }
 
-void router_add_api(char* path, char* method, route_handler cb) {
+void router_add_api(const char* path, const char* method, route_handler cb) {
   Route* route = (Route*)malloc(ROUTESIZE);
   ApiRoute* api_route = (ApiRoute*)malloc(API_ROUTESIZE);
 
@@ -54,7 +54,7 @@ void router_add_api(char* path, char* method, route_handler cb) {
   router.routes[router.length - 1] = *route;
 }
 
-void serve_static(char* base_path, char* dir) {
+void serve_static(const char* base_path, const char* dir) {
   Route* route = (Route*)malloc(ROUTESIZE);
   StaticRoute* static_route = (StaticRoute*)malloc(STATIC_ROUTESIZE);
 
@@ -93,44 +93,44 @@ void handle_static(StaticRoute* route, Request* req, Response* res) {
   free(file_path);
 }
 
-void route_get(char* path, route_handler cb) {
+void route_get(const char* path, route_handler cb) {
   router_add_api(path, "GET", cb);
 }
 
-void route_post(char* path, route_handler cb) {
+void route_post(const char* path, route_handler cb) {
   router_add_api(path, "POST", cb);
 }
 
-void route_put(char* path, route_handler cb) {
+void route_put(const char* path, route_handler cb) {
   router_add_api(path, "PUT", cb);
 }
 
-void route_patch(char* path, route_handler cb) {
+void route_patch(const char* path, route_handler cb) {
   router_add_api(path, "PATCH", cb);
 }
 
-void route_delete(char* path, route_handler cb) {
+void route_delete(const char* path, route_handler cb) {
   router_add_api(path, "DELETE", cb);
 }
 
-void route_head(char* path, route_handler cb) {
+void route_head(const char* path, route_handler cb) {
   router_add_api(path, "HEAD", cb);
 }
 
-void route_options(char* path, route_handler cb) {
+void route_options(const char* path, route_handler cb) {
   router_add_api(path, "OPTIONS", cb);
 }
 
-void route_trace(char* path, route_handler cb) {
+void route_trace(const char* path, route_handler cb) {
   router_add_api(path, "TRACE", cb);
 }
 
-void route_connect(char* path, route_handler cb) {
+void route_connect(const char* path, route_handler cb) {
   router_add_api(path, "CONNECT", cb);
 }
 
 void router_route(Request* req, Response* res) {
-  for (int i = 0; i < router.length; i++) {
+  for (u64 i = 0; i < router.length; i++) {
     Route route = router.routes[i];
 
     if (route.is_static) {

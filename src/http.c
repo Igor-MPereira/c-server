@@ -1,10 +1,12 @@
 #include "http.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "route.h"
 
-SOCKET listen_socket(int port) {
+SOCKET listen_socket(u16 port) {
   SOCKET sSock;
-  t_sockaddr_in addr;
+
+  SOCKADDR_IN addr;
 
   win_WSAStart();
 
@@ -19,16 +21,16 @@ SOCKET listen_socket(int port) {
   addr.sin_port = htons(port);
   addr.sin_addr.s_addr = INADDR_ANY;
 
-  if (bind(sSock, (t_sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+  if (bind(sSock, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR) {
     perror("Failed to bind socket.\n");
-    closesocket(sSock);
+    close(sSock);
     WSACleanup();
     return INVALID_SOCKET;
   }
 
   if (listen(sSock, SOMAXCONN) == SOCKET_ERROR) {
     perror("Failed to listen on socket.\n");
-    closesocket(sSock);
+    close(sSock);
     WSACleanup();
     return INVALID_SOCKET;
   }
@@ -38,13 +40,13 @@ SOCKET listen_socket(int port) {
 
 SOCKET accept_socket(SOCKET sSock) {
   SOCKET cSock;
-  t_sockaddr_in addr;
-  int addr_size = sizeof(addr);
+  SOCKADDR_IN addr;
+  u32 addr_size = sizeof(addr);
 
-  cSock = accept(sSock, (t_sockaddr*)&addr, &addr_size);
+  cSock = accept(sSock, (SOCKADDR*)&addr, &addr_size);
   if (cSock == INVALID_SOCKET) {
     perror("Failed to accept socket.\n");
-    closesocket(sSock);
+    close(sSock);
     WSACleanup();
     return INVALID_SOCKET;
   }
@@ -55,18 +57,18 @@ SOCKET accept_socket(SOCKET sSock) {
 Request* recv_request(SOCKET cSock) {
   Request* request = request_new();
   char buffer[BUFFER_SIZE];
-  int bytes_received;
+  ssize_t bytes_received;
 
   bytes_received = recv(cSock, buffer, BUFFER_SIZE, 0);
 
   if (bytes_received == SOCKET_ERROR) {
     perror("Failed to receive data.\n");
-    closesocket(cSock);
+    close(cSock);
     WSACleanup();
     return NULL;
   }
 
-  printf("Received %d bytes.\n\n", bytes_received);
+  printf("Received %ld bytes.\n\n", bytes_received);
 
   request_parse(request, buffer);
 
@@ -81,7 +83,7 @@ int send_response(SOCKET cSock, Response* response) {
 
   if (send(cSock, string, size, 0) == SOCKET_ERROR) {
     perror("Failed to send data.\n");
-    closesocket(cSock);
+    close(cSock);
     WSACleanup();
     return 1;
   }
@@ -91,7 +93,7 @@ int send_response(SOCKET cSock, Response* response) {
   return 0;
 }
 
-SOCKET http_server(int port, void (*onload)(), bool cors) {
+SOCKET http_server(u16 port, void (*onload)(), bool cors) {
   SOCKET sSock = listen_socket(port);
 
   if (sSock == INVALID_SOCKET) {
@@ -126,13 +128,13 @@ SOCKET http_server(int port, void (*onload)(), bool cors) {
 
     send_response(cSock, response);
 
-    closesocket(cSock);
+    close(cSock);
 
     request_destroy(request);
     response_destroy(response);
   }
 
-  closesocket(sSock);
+  close(sSock);
   WSACleanup();
 
   return 0;

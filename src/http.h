@@ -8,19 +8,33 @@
     perror("Failed to initialize Winsock.\n");     \
     return 1;                                      \
   }
+
+// Defining linux types, functions and macros for winsock2
+
+#define close closesocket
 #else
+#include <netinet/in.h>
 #include <sys/socket.h>
+#include <unistd.h>
+
+// Defining winsock2 types, functions and macros for linux
+
 #define WSACleanup()
 #define win_WSAStart()
+
+typedef int SOCKET;
+typedef struct sockaddr SOCKADDR;
+typedef struct sockaddr_in SOCKADDR_IN;
+
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
 #endif
 
 #include "request.h"
 #include "response.h"
 
-typedef struct sockaddr t_sockaddr;
-typedef struct sockaddr_in t_sockaddr_in;
-
-SOCKET listen_socket(int port);
+SOCKET listen_socket(u16 port);
 
 SOCKET accept_socket(SOCKET sSock);
 
@@ -28,6 +42,6 @@ Request* recv_request(SOCKET cSock);
 
 int send_response(SOCKET cSock, Response* response);
 
-SOCKET http_server(int port, void (*onload)(), bool cors);
+SOCKET http_server(u16 port, void (*onload)(), bool cors);
 
 void enable_cors(bool enable, Headers* headers);

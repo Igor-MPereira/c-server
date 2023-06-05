@@ -3,7 +3,7 @@
 #include "headers.h"
 
 typedef struct {
-  int status_code;
+  u16 status_code;
   char status_text[16];
   Headers* headers;
   char* body;
@@ -36,5 +36,5 @@ size_t response_size(Response* response, char** headers);
 
 void response_set_body(Response* response, char* body);
 void response_set_status(Response* response,
-                         int status_code,
+                         u16 status_code,
                          char* status_text);
