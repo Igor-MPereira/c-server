@@ -1,4 +1,5 @@
-#include "file.h"
+#include <file.h>
+
 #include <stdlib.h>
 
 void serve_file(const char* path, Request* req, Response* res) {
@@ -8,7 +9,7 @@ void serve_file(const char* path, Request* req, Response* res) {
     printf("File not found: %s\n", path);
     response_set_status(res, 404, "Not Found");
     headers_add(res->headers, "Content-Type", "text/html");
-    response_set_body(res, "<h1>404 Not Found</h1>");
+    response_set_body(res, "<h1>404 Not Found!</h1>");
     return;
   }
 

@@ -2,7 +2,8 @@
 
 #include <string.h>
 #include <strings.h>
-#include "types.h"
+
+#include <utils/types.h>
 
 /// @brief Compares two strings.
 /// @param s1 first string

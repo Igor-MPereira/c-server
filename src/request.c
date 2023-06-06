@@ -1,10 +1,10 @@
-#include "request.h"
+#include <request.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "hash.h"
-#define _GNU_SOURCE
-#include <string.h>
-#include "string.h"
+
+#include <utils/hash.h>
+#include <utils/string.h>
 
 Request* request_new() {
   Request* r = (Request*)malloc(sizeof(Request));

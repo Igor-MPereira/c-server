@@ -1,7 +1,7 @@
 #pragma once
 
-#include "headers.h"
-#include "http.h"
+#include <headers.h>
+#include <http.h>
 
 typedef struct {
   u16 status_code;

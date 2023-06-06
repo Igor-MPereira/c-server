@@ -1,13 +1,12 @@
-#include "route.h"
+#include <route.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "file.h"
-#include "string.h"
 
-void router_new() {
-  router.routes = null;
-  router.length = 0;
-}
+#include <file.h>
+#include <utils/string.h>
+
+static Router router = {.routes = null, .length = 0};
 
 void router_free() {
   for (u64 i = 0; i < router.length; i++) {

@@ -1,8 +1,8 @@
+#include <file.h>
+#include <http.h>
+#include <route.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "src/file.h"
-#include "src/http.h"
-#include "src/route.h"
 
 void onload(u16 port) {
   printf(
@@ -47,8 +47,6 @@ int main(int argc, char** argv) {
     printf("Usage: %s <port>\n", argv[0]);
     return 1;
   }
-
-  router_new();
 
   serve_static("/static", "static");
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string.h>
-#include "types.h"
+#include <utils/types.h>
 
 /// @brief Hashes a string using sdbm algorithm.
 /// http://www.cse.yorku.ca/~oz/hash.html

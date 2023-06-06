@@ -1,4 +1,6 @@
-#include "hash.h"
+#include <utils/hash.h>
+
+#include <string.h>
 
 u32 hash(const char* str) {
   u32 hash = 0;

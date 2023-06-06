@@ -1,7 +1,9 @@
-#include "response.h"
+#include <response.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+#include <utils/string.h>
 
 Response* response_new() {
   Response* response = malloc(sizeof(Response));

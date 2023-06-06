@@ -35,15 +35,14 @@ typedef struct {
   size_t length;
 } Router;
 
-static Router router;
-
-void router_new();
 void router_free();
 
 void serve_static(const char* base_path, const char* dir);
 void handle_static(StaticRoute* route, Request* req, Response* res);
 
-void router_add_api(const char* path, const char* method, route_handler callback);
+void router_add_api(const char* path,
+                    const char* method,
+                    route_handler callback);
 
 void route_get(const char* path, route_handler callback);
 void route_post(const char* path, route_handler callback);

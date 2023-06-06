@@ -1,6 +1,8 @@
 #pragma once
 
-#include "types.h"
+#include <utils/defs.h>
+#include <utils/types.h>
+
 #define HEADER_MAX_SIZE kB(4) - 1
 typedef struct Header {
   char* key;

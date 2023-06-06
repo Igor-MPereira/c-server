@@ -1,9 +1,12 @@
-#include "headers.h"
+#include <headers.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "hash.h"
-#include "hashed_file_extensions.h"
-#include "string.h"
+
+#include <utils/hash.h>
+#include <utils/string.h>
+
+#include <hashed_file_extensions.h>
 
 Headers* headers_new() {
   Headers* h = (Headers*)malloc(sizeof(Headers));

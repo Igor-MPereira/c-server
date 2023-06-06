@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma region Cross-Platform Compatibility
+
 #ifdef _WIN32
 #include <winsock2.h>
 #define win_WSAStart()                             \
@@ -31,8 +33,10 @@ typedef struct sockaddr_in SOCKADDR_IN;
 
 #endif
 
-#include "request.h"
-#include "response.h"
+#pragma endregion
+
+#include <request.h>
+#include <response.h>
 
 SOCKET listen_socket(u16 port);
 

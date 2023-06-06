@@ -1,8 +1,10 @@
-#include "http.h"
+#include <http.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "route.h"
-#include "util.h"
+
+#include <route.h>
+#include <utils/defs.h>
 
 SOCKET listen_socket(u16 port) {
   SOCKET sSock;
@@ -56,9 +58,9 @@ SOCKET accept_socket(SOCKET sSock) {
 }
 
 bool recv_request(SOCKET cSock, Request* request) {
-  char buffer[BUFFER_SIZE] = {0};
+  char buffer[REQ_MAXSIZE] = {0};
 
-  size_t bytes_received = recv(cSock, buffer, BUFFER_SIZE, 0);
+  size_t bytes_received = recv(cSock, buffer, REQ_MAXSIZE, 0);
 
   printf("Received %ld bytes.\n\n", bytes_received);
 
