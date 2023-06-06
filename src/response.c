@@ -14,8 +14,8 @@ Response* response_new() {
   return response;
 }
 
-void response_destroy(Response* response) {
-  headers_destroy(response->headers);
+void response_free(Response* response) {
+  headers_free(response->headers);
   free(response->body);
   free(response);
 }
@@ -69,4 +69,22 @@ void response_set_status(Response* response,
                          char* status_text) {
   response->status_code = status_code;
   strncpy(response->status_text, status_text, 15);
+}
+
+int response_send(SOCKET cSock, Response* response) {
+  char* string;
+  size_t size;
+
+  response_stringify(response, &string, &size);
+
+  if (send(cSock, string, size, 0) == SOCKET_ERROR) {
+    perror("Failed to send data.\n");
+    close(cSock);
+    WSACleanup();
+    return 1;
+  }
+
+  free(string);
+
+  return 0;
 }

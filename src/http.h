@@ -38,10 +38,8 @@ SOCKET listen_socket(u16 port);
 
 SOCKET accept_socket(SOCKET sSock);
 
-Request* recv_request(SOCKET cSock);
+bool recv_request(SOCKET cSock, Request* request);
 
-int send_response(SOCKET cSock, Response* response);
-
-SOCKET http_server(u16 port, void (*onload)(), bool cors);
+SOCKET http_server(u16 port, void (*onload)(u16), bool cors);
 
 void enable_cors(bool enable, Headers* headers);

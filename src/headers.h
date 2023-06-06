@@ -20,7 +20,7 @@ Headers* headers_new();
 
 /// @brief Destroy and free the memory of the headers.
 /// @param headers
-void headers_destroy(Headers* headers);
+void headers_free(Headers* headers);
 
 /// @brief Add a new header to the headers.
 /// @param headers The headers.

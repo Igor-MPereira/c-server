@@ -11,7 +11,7 @@ typedef struct {
 
 Request* request_new();
 
-void request_destroy(Request* request);
+void request_free(Request* request);
 
 void request_parse(Request* request, char* buffer);
 

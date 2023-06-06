@@ -4,13 +4,14 @@
 #include "src/http.h"
 #include "src/route.h"
 
-void onload() {
+void onload(u16 port) {
   printf(
       "Running...\n\n"
 
-      "Server is listening on port 8080.\n\n"
+      "Server listening on port %d.\n\n"
 
-      "http://localhost:8080/\n");
+      "http://localhost:%d\n\n",
+      port, port);
 }
 
 void Index(Request* _, Response* res) {
@@ -47,7 +48,7 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  router_init();
+  router_new();
 
   serve_static("/static", "static");
 
@@ -58,7 +59,7 @@ int main(int argc, char** argv) {
 
   sSock = http_server(atoi(argv[1]), onload, true);
 
-  router_destroy();
+  router_free();
 
   if (sSock == INVALID_SOCKET)
     return 1;

@@ -14,8 +14,8 @@ Request* request_new() {
   return r;
 }
 
-void request_destroy(Request* r) {
-  headers_destroy(r->headers);
+void request_free(Request* r) {
+  headers_free(r->headers);
   free(r->body);
   free(r);
 }
@@ -26,11 +26,20 @@ void request_parse_body(Request* r, char* ctx) {
   if (contentLength) {
     i32 length = atoi(contentLength);
     r->body = (char*)malloc(length + 1);
+    ctx += 2;
     strcpy(r->body, ctx);
+    printf("ctx: %s\n", ctx);
+    printf("length: %d\n", length);
+    printf("body: %s\n", r->body);
+    printf("strlen(body): %ld\n", strlen(r->body));
+    printf("strlen(ctx): %ld\n", strlen(ctx));
+    printf("streq(body, ctx): %d\n", streq(r->body, ctx));
   }
 }
 
 void request_parse(Request* r, char* reqStr) {
+  printf("Request string: %s\n", reqStr);
+
   char* ctx;
   char* line = strtok_r(reqStr, "\r\n", &ctx);
   char* method = strtok(line, " ");
@@ -44,6 +53,7 @@ void request_parse(Request* r, char* reqStr) {
   headers_parse(r->headers, &ctx);
 
   request_parse_body(r, ctx);
+  request_print(r);
 }
 
 void request_print(Request* r) {

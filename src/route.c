@@ -4,12 +4,12 @@
 #include "file.h"
 #include "string.h"
 
-void router_init() {
+void router_new() {
   router.routes = null;
   router.length = 0;
 }
 
-void router_destroy() {
+void router_free() {
   for (u64 i = 0; i < router.length; i++) {
     Route* route = &router.routes[i];
 
@@ -129,21 +129,19 @@ void route_connect(const char* path, route_handler cb) {
   router_add_api(path, "CONNECT", cb);
 }
 
-void router_route(Request* req, Response* res) {
+void router_handle_request(Request* req, Response* res) {
   for (u64 i = 0; i < router.length; i++) {
     Route route = router.routes[i];
 
     if (route.is_static) {
-      if (strcasestr(req->path, route.static_route->base_path) != req->path)
-        continue;
-
-      if (!(streq(req->method, "GET") || streq(req->method, "HEAD")))
+      if (!strcasestarts(req->path, route.static_route->base_path) ||
+          (strdiff(req->method, "GET") && strdiff(req->method, "HEAD")))
         continue;
 
       return handle_static(route.static_route, req, res);
     }
 
-    if (!streq(req->method, route.api_route->method))
+    if (strdiff(req->method, route.api_route->method))
       continue;
 
     if (strcaseeq(req->path, route.api_route->path))

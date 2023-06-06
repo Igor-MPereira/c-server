@@ -37,8 +37,8 @@ typedef struct {
 
 static Router router;
 
-void router_init();
-void router_destroy();
+void router_new();
+void router_free();
 
 void serve_static(const char* base_path, const char* dir);
 void handle_static(StaticRoute* route, Request* req, Response* res);
@@ -55,4 +55,4 @@ void route_options(const char* path, route_handler callback);
 void route_trace(const char* path, route_handler callback);
 void route_connect(const char* path, route_handler callback);
 
-void router_route(Request* req, Response* res);
+void router_handle_request(Request* req, Response* res);

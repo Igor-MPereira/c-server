@@ -12,12 +12,11 @@ void serve_file(const char* path, Request* req, Response* res) {
     return;
   }
 
-  fseek(file, 0, SEEK_END);
-  long size = ftell(file);
-  fseek(file, 0, SEEK_SET);
+  size_t size = file_size(file);
 
   char* buffer = (char*)malloc(size + 1);
-  fread(buffer, 1, size, file);
+
+  readfile(file, buffer, size);
   buffer[size] = '\0';
 
   fclose(file);

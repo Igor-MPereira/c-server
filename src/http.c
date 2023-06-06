@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "route.h"
+#include "util.h"
 
 SOCKET listen_socket(u16 port) {
   SOCKET sSock;
@@ -11,6 +12,7 @@ SOCKET listen_socket(u16 port) {
   win_WSAStart();
 
   sSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
   if (sSock == INVALID_SOCKET) {
     perror("Failed to create socket.\n");
     WSACleanup();
@@ -44,9 +46,8 @@ SOCKET accept_socket(SOCKET sSock) {
   u32 addr_size = sizeof(addr);
 
   cSock = accept(sSock, (SOCKADDR*)&addr, &addr_size);
+
   if (cSock == INVALID_SOCKET) {
-    perror("Failed to accept socket.\n");
-    close(sSock);
     WSACleanup();
     return INVALID_SOCKET;
   }
@@ -54,54 +55,28 @@ SOCKET accept_socket(SOCKET sSock) {
   return cSock;
 }
 
-Request* recv_request(SOCKET cSock) {
-  Request* request = request_new();
-  char buffer[BUFFER_SIZE];
-  ssize_t bytes_received;
+bool recv_request(SOCKET cSock, Request* request) {
+  char buffer[BUFFER_SIZE] = {0};
 
-  bytes_received = recv(cSock, buffer, BUFFER_SIZE, 0);
-
-  if (bytes_received == SOCKET_ERROR) {
-    perror("Failed to receive data.\n");
-    close(cSock);
-    WSACleanup();
-    return NULL;
-  }
+  size_t bytes_received = recv(cSock, buffer, BUFFER_SIZE, 0);
 
   printf("Received %ld bytes.\n\n", bytes_received);
 
+  if (bytes_received <= 0)
+    return false;
+
   request_parse(request, buffer);
 
-  return request;
+  return true;
 }
 
-int send_response(SOCKET cSock, Response* response) {
-  char* string;
-  size_t size;
-
-  response_stringify(response, &string, &size);
-
-  if (send(cSock, string, size, 0) == SOCKET_ERROR) {
-    perror("Failed to send data.\n");
-    close(cSock);
-    WSACleanup();
-    return 1;
-  }
-
-  free(string);
-
-  return 0;
-}
-
-SOCKET http_server(u16 port, void (*onload)(), bool cors) {
+SOCKET http_server(u16 port, void (*onload)(u16), bool cors) {
   SOCKET sSock = listen_socket(port);
 
-  if (sSock == INVALID_SOCKET) {
-    perror("Failed to create socket.\n");
-    return 1;
-  }
+  if (sSock == INVALID_SOCKET)
+    return INVALID_SOCKET;
 
-  onload();
+  onload(port);
 
   while (1) {
     SOCKET cSock = accept_socket(sSock);
@@ -113,25 +88,27 @@ SOCKET http_server(u16 port, void (*onload)(), bool cors) {
 
     printf("Accepted connection.\n\n");
 
-    Request* request = recv_request(cSock);
+    Request* request = request_new();
 
-    if (!request) {
+    if (!recv_request(cSock, request)) {
       perror("Failed to receive request.\n");
-      return 1;
+      request_free(request);
+      close(cSock);
+      continue;
     }
 
     Response* response = response_new();
 
-    router_route(request, response);
+    router_handle_request(request, response);
 
     enable_cors(cors, response->headers);
 
-    send_response(cSock, response);
+    response_send(cSock, response);
 
     close(cSock);
 
-    request_destroy(request);
-    response_destroy(response);
+    request_free(request);
+    response_free(response);
   }
 
   close(sSock);
@@ -141,7 +118,6 @@ SOCKET http_server(u16 port, void (*onload)(), bool cors) {
 }
 
 void enable_cors(bool enable, Headers* headers) {
-  if (enable) {
+  if (enable)
     headers_set(headers, "Access-Control-Allow-Origin", "*");
-  }
 }

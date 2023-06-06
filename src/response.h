@@ -1,6 +1,7 @@
 #pragma once
 
 #include "headers.h"
+#include "http.h"
 
 typedef struct {
   u16 status_code;
@@ -15,7 +16,7 @@ Response* response_new();
 
 /// @brief Destroy and free the memory of the response.
 /// @param response
-void response_destroy(Response* response);
+void response_free(Response* response);
 
 /// @brief Print the response.
 /// @param response The response.
@@ -38,3 +39,5 @@ void response_set_body(Response* response, char* body);
 void response_set_status(Response* response,
                          u16 status_code,
                          char* status_text);
+
+int response_send(SOCKET cSock, Response* response);

@@ -7,6 +7,7 @@ gcc -o ./server main.c \
   src/string.c \
   src/route.c \
   src/file.c \
+  -ggdb3 \
   -std=gnu99 \
-  -Wall -Wextra \
-  -O3
+  -Wall -Wextra
+# -O3

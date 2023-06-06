@@ -17,6 +17,24 @@ bool streq(const char* s1, const char* s2);
 /// @return true if the substrings are equal, false otherwise
 bool strneq(const char* s1, const char* s2, size_t n);
 
+/// @brief Compares two strings.
+/// @param s1 first string
+/// @param s2 second string
+/// @return true if the strings are different, false otherwise
+bool strdiff(const char* s1, const char* s2);
+
+/// @brief Checks if a string starts with another string.
+/// @param str string to be checked
+/// @param start string to check for
+/// @return true if the string starts with the other string, false otherwise
+bool strstarts(const char* str, const char* start);
+
+/// @brief Checks if a string starts with another string ignoring case.
+/// @param str string to be checked
+/// @param start string to check for
+/// @return true if the string starts with the other string, false otherwise
+bool strcasestarts(const char* str, const char* start);
+
 /// @brief Replaces an array of characters in a string.
 /// @param str string to be modified
 /// @param toReplace list of characters to be replaced

@@ -12,7 +12,7 @@ Headers* headers_new() {
   return h;
 }
 
-void headers_destroy(Headers* h) {
+void headers_free(Headers* h) {
   Header* header = h->first;
 
   while (header) {
@@ -87,14 +87,7 @@ char* headers_get(Headers* h, char* key) {
 bool headers_has(Headers* h, char* key) {
   Header* header = h->first;
 
-  while (header) {
-    if (streq(header->key, key))
-      return true;
-
-    header = header->next;
-  }
-
-  return false;
+  return headers_get(h, key) != null;
 }
 
 void headers_set(Headers* h, char* key, char* value) {
@@ -131,6 +124,7 @@ char* headers_stringify(Headers* h) {
   Header* header = h->first;
 
   string[0] = '\0';
+
   while (header) {
     strncat(string, header->key, HEADER_MAX_SIZE);
     strcat(string, ": ");
