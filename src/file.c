@@ -1,12 +1,56 @@
 #include <file.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 
-void serve_file(const char* path, Request* req, Response* res) {
-  FILE* file = fopen(path, "rb");
+#include <utils/string.h>
+
+void join_path(const char* base, const char* path, char* buffer, size_t size) {
+  strncpy(buffer, base, size);
+
+  size_t lastidx = strlen(buffer) - 1;
+
+  if (buffer[lastidx] == PATHSEP && path[0] == PATHSEP) {
+    strncat(buffer, path + 1, size);
+    return;
+  }
+
+  if (buffer[lastidx] != PATHSEP && path[0] != PATHSEP)
+    strncat(buffer, PATHSEPSTR, size);
+
+  strncat(buffer, path, size);
+}
+
+void resolve_path(const char* base,
+                  const char* path,
+                  char* buffer,
+                  size_t size) {
+  char first = path[0];
+
+  if (first == '/') {
+    strncpy(buffer, path, size);
+    return;
+  }
+
+  if (first == '~') {
+    join_path(getenv("HOME"), path + 1, buffer, size);
+    return;
+  }
+
+  join_path(base, path, buffer, size);
+}
+
+void send_file(const char* path,
+               Request* _ __attribute_maybe_unused__,
+               Response* res) {
+  char fullpath[300] = {0};
+
+  resolve_path(__ROOT_DIR__, path, fullpath, 300);
+  printf("Fullpath: %s\n", fullpath);
+  FILE* file = fopen(fullpath, "rb");
 
   if (file == null) {
-    printf("File not found: %s\n", path);
+    printf("File not found: %s\n", fullpath);
     response_set_status(res, 404, "Not Found");
     headers_add(res->headers, "Content-Type", "text/html");
     response_set_body(res, "<h1>404 Not Found!</h1>");
@@ -23,7 +67,7 @@ void serve_file(const char* path, Request* req, Response* res) {
   fclose(file);
 
   response_set_status(res, 200, "OK");
-  headers_add(res->headers, "Content-Type", mime_type(path));
+  headers_add(res->headers, "Content-Type", mime_type(fullpath));
   response_set_body(res, buffer);
 
   free(buffer);

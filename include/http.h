@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma region Cross-Platform Compatibility
-
 #ifdef _WIN32
 #include <winsock2.h>
 #define win_WSAStart()                             \
@@ -32,8 +30,6 @@ typedef struct sockaddr_in SOCKADDR_IN;
 #define SOCKET_ERROR -1
 
 #endif
-
-#pragma endregion
 
 #include <request.h>
 #include <response.h>

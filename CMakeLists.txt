@@ -6,6 +6,9 @@ project(${PROJECT_NAME})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -std=gnu99")
 
+add_compile_definitions(_GNU_SOURCE)
+add_compile_definitions(__ROOT_DIR__="${CMAKE_SOURCE_DIR}")
+
 file(GLOB_RECURSE SOURCES src/*.c)
 
 add_executable(${PROJECT_NAME} main.c ${SOURCES})

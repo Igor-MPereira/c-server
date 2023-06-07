@@ -78,16 +78,19 @@ void serve_static(const char* base_path, const char* dir) {
 
 void handle_static(StaticRoute* route, Request* req, Response* res) {
   char* path = req->path + strlen(route->base_path);
-  char* file_path = (char*)malloc(strlen(route->dir) + strlen(path) + 1);
+  size_t dir_len = strlen(route->dir);
+  char* file_path = (char*)malloc(dir_len + strlen(path) + 1);
 
   strcpy(file_path, route->dir);
 
-  if (path[0] != '/')
+  if (file_path[dir_len - 1] != '/' && path[0] != '/')
     strcat(file_path, "/");
+  else if (file_path[dir_len - 1] == '/' && path[0] == '/')
+    path++;
 
   strcat(file_path, path);
 
-  serve_file(file_path, req, res);
+  send_file(file_path, req, res);
 
   free(file_path);
 }

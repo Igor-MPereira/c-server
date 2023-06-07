@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define PORT 8080
+
 void onload(u16 port) {
   printf(
       "Running...\n\n"
@@ -15,10 +17,10 @@ void onload(u16 port) {
 }
 
 void Index(Request* _, Response* res) {
-  serve_file("static/index.html", _, res);
+  send_file("static/index.html", _, res);
 }
 
-void Users(Request* _, Response* res) {
+void Users(Request* _ __attribute_maybe_unused__, Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res,
@@ -28,13 +30,13 @@ void Users(Request* _, Response* res) {
                     "]}");
 }
 
-void PostUsers(Request* req, Response* res) {
+void PostUsers(Request* _ __attribute_maybe_unused__, Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User created\"}");
 }
 
-void PutUsers(Request* req, Response* res) {
+void PutUsers(Request* __attribute_maybe_unused__, Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User updated\"}");
@@ -43,11 +45,11 @@ void PutUsers(Request* req, Response* res) {
 int main(int argc, char** argv) {
   SOCKET sSock;
 
-  if (argc != 2) {
-    printf("Usage: %s <port>\n", argv[0]);
-    return 1;
-  }
+  u16 port = PORT;
 
+  if (argc > 1)
+    port = atoi(argv[1]);
+  
   serve_static("/static", "static");
 
   route_get("/", Index);
@@ -55,7 +57,7 @@ int main(int argc, char** argv) {
   route_post("/users", PostUsers);
   route_put("/users", PutUsers);
 
-  sSock = http_server(atoi(argv[1]), onload, true);
+  sSock = http_server(port, onload, true);
 
   router_free();
 
