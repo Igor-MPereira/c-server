@@ -1,41 +1,41 @@
 #include <route.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <file.h>
+#include <utils/memory.h>
 #include <utils/string.h>
 
-static Router router = {.routes = null, .length = 0};
+static Router r = {.routes = null, .length = 0};
 
 void router_free() {
-  for (u64 i = 0; i < router.length; i++) {
-    Route* route = &router.routes[i];
+  for (u64 i = 0; i < r.length; i++) {
+    Route* route = r.routes[i];
 
     if (!route->is_static) {
-      free(route->api_route->path);
-      free(route->api_route->method);
-      free(route->api_route);
+      memfree(route->api_route->path);
+      memfree(route->api_route->method);
+      memfree(route->api_route);
     } else {
-      free(route->static_route->base_path);
-      free(route->static_route->dir);
-      free(route->static_route);
+      memfree(route->static_route->base_path);
+      memfree(route->static_route->dir);
+      memfree(route->static_route);
     }
 
-    free(route);
+    memfree(route);
   }
 
-  free(router.routes);
+  memfree(r.routes);
 }
 
 void router_add_api(const char* path, const char* method, route_handler cb) {
-  Route* route = (Route*)malloc(ROUTESIZE);
-  ApiRoute* api_route = (ApiRoute*)malloc(API_ROUTESIZE);
+  Route* route = (Route*)memalloc(ROUTESIZE);
+  ApiRoute* api_route = (ApiRoute*)memalloc(API_ROUTESIZE);
 
-  api_route->path = (char*)malloc(strlen(path) + 1);
+  api_route->path = (char*)memalloc(strlen(path) + 1);
   strcpy(api_route->path, path);
 
-  api_route->method = (char*)malloc(strlen(method) + 1);
+  api_route->method = (char*)memalloc(strlen(method) + 1);
   strcpy(api_route->method, method);
 
   api_route->callback = cb;
@@ -43,43 +43,43 @@ void router_add_api(const char* path, const char* method, route_handler cb) {
   route->api_route = api_route;
   route->is_static = false;
 
-  router.length++;
+  r.length++;
 
-  if (router.routes == null)
-    router.routes = (Route*)malloc(ROUTESIZE);
+  if (!r.routes)
+    r.routes = (Route**)memalloc(sizeof(Route*));
   else
-    router.routes = (Route*)realloc(router.routes, ROUTESIZE * router.length);
+    r.routes = (Route**)memrealloc(r.routes, sizeof(Route*) * r.length);
 
-  router.routes[router.length - 1] = *route;
+  r.routes[r.length - 1] = route;
 }
 
 void serve_static(const char* base_path, const char* dir) {
-  Route* route = (Route*)malloc(ROUTESIZE);
-  StaticRoute* static_route = (StaticRoute*)malloc(STATIC_ROUTESIZE);
+  Route* route = (Route*)memalloc(ROUTESIZE);
+  StaticRoute* static_route = (StaticRoute*)memalloc(STATIC_ROUTESIZE);
 
-  static_route->base_path = (char*)malloc(strlen(base_path) + 1);
+  static_route->base_path = (char*)memalloc(strlen(base_path) + 1);
   strcpy(static_route->base_path, base_path);
 
-  static_route->dir = (char*)malloc(strlen(dir) + 1);
+  static_route->dir = (char*)memalloc(strlen(dir) + 1);
   strcpy(static_route->dir, dir);
 
   route->static_route = static_route;
   route->is_static = true;
 
-  router.length++;
+  r.length++;
 
-  if (router.routes == null)
-    router.routes = (Route*)malloc(ROUTESIZE);
+  if (!r.routes)
+    r.routes = (Route**)memalloc(sizeof(Route*));
   else
-    router.routes = (Route*)realloc(router.routes, ROUTESIZE * router.length);
+    r.routes = (Route**)memrealloc(r.routes, sizeof(Route*) * r.length);
 
-  router.routes[router.length - 1] = *route;
+  r.routes[r.length - 1] = route;
 }
 
 void handle_static(StaticRoute* route, Request* req, Response* res) {
   char* path = req->path + strlen(route->base_path);
   size_t dir_len = strlen(route->dir);
-  char* file_path = (char*)malloc(dir_len + strlen(path) + 1);
+  char* file_path = (char*)memalloc(dir_len + strlen(path) + 1);
 
   strcpy(file_path, route->dir);
 
@@ -92,7 +92,7 @@ void handle_static(StaticRoute* route, Request* req, Response* res) {
 
   send_file(file_path, req, res);
 
-  free(file_path);
+  memfree(file_path);
 }
 
 void route_get(const char* path, route_handler cb) {
@@ -132,22 +132,22 @@ void route_connect(const char* path, route_handler cb) {
 }
 
 void router_handle_request(Request* req, Response* res) {
-  for (u64 i = 0; i < router.length; i++) {
-    Route route = router.routes[i];
+  for (u64 i = 0; i < r.length; i++) {
+    Route* route = r.routes[i];
 
-    if (route.is_static) {
-      if (!strcasestarts(req->path, route.static_route->base_path) ||
+    if (route->is_static) {
+      if (!strcasestarts(req->path, route->static_route->base_path) ||
           (strdiff(req->method, "GET") && strdiff(req->method, "HEAD")))
         continue;
 
-      return handle_static(route.static_route, req, res);
+      return handle_static(route->static_route, req, res);
     }
 
-    if (strdiff(req->method, route.api_route->method))
+    if (strdiff(req->method, route->api_route->method))
       continue;
 
-    if (strcaseeq(req->path, route.api_route->path))
-      return route.api_route->callback(req, res);
+    if (strcaseeq(req->path, route->api_route->path))
+      return route->api_route->callback(req, res);
   }
 
   response_set_status(res, 404, "Not Found");

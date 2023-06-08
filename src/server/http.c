@@ -1,11 +1,11 @@
 #include <server/http.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <route.h>
 #include <server/sockets.h>
 #include <utils/defs.h>
+#include <utils/memory.h>
 
 bool recv_request(SOCKET cSock, Request* request) {
   char buffer[REQ_MAXSIZE] = {0};
@@ -29,12 +29,12 @@ bool send_response(SOCKET cSock, Response* response) {
   response_stringify(response, &string, &size);
 
   if (send(cSock, string, size, 0) != SOCKET_ERROR) {
-    free(string);
+    memfree(string);
     return true;
   }
 
   perror("Failed to send data.\n");
-  free(string);
+  memfree(string);
   close(cSock);
   WSACleanup();
   return false;
@@ -49,6 +49,8 @@ SOCKET http_server(u16 port, ServerOptions* opt, void (*onload)(u16)) {
   onload(port);
 
   while (1) {
+    start_memtrace("Tracing Request Lifetime...");
+
     SOCKET cSock = accept_socket(sSock);
 
     if (cSock == INVALID_SOCKET) {
@@ -79,6 +81,9 @@ SOCKET http_server(u16 port, ServerOptions* opt, void (*onload)(u16)) {
 
     request_free(request);
     response_free(response);
+
+    memory_report(true);
+    stop_memtrace("Request Lifetime Tracing Complete.");
   }
 
   close(sSock);

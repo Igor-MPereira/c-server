@@ -1,11 +1,10 @@
 #include <server/options.h>
 
-#include <stdlib.h>
-
 #include <headers.h>
+#include <utils/memory.h>
 
 ServerOptions* server_options_new() {
-  ServerOptions* opt = malloc(sizeof(ServerOptions));
+  ServerOptions* opt = memalloc(sizeof(ServerOptions));
 
   opt->headers = headers_new();
 
@@ -14,11 +13,11 @@ ServerOptions* server_options_new() {
 
 void server_options_free(ServerOptions* opt) {
   headers_free(opt->headers);
-  free(opt);
+  memfree(opt);
 }
 
 CorsOptions* cors_options_new() {
-  CorsOptions* cors = malloc(sizeof(CorsOptions));
+  CorsOptions* cors = memalloc(sizeof(CorsOptions));
 
   cors->origin = null;
   cors->methods = null;
@@ -30,7 +29,7 @@ CorsOptions* cors_options_new() {
 }
 
 void cors_options_free(CorsOptions* cors) {
-  free(cors);
+  memfree(cors);
 }
 
 void use_default_headers(ServerOptions* opt, Headers* headers) {
@@ -39,17 +38,17 @@ void use_default_headers(ServerOptions* opt, Headers* headers) {
 
 void use_cors(ServerOptions* opt, CorsOptions* cors) {
   if (cors->origin)
-    headers_set(opt->headers, CORSPRE "Allow-Origin", cors->origin);
+    headers_set(opt->headers, CORS_ORIGIN, (char*)cors->origin);
 
   if (cors->methods)
-    headers_set(opt->headers, CORSPRE "Allow-Methods", cors->methods);
+    headers_set(opt->headers, CORS_METHODS, (char*)cors->methods);
 
   if (cors->headers)
-    headers_set(opt->headers, CORSPRE "Allow-Headers", cors->headers);
+    headers_set(opt->headers, CORS_HEADERS, (char*)cors->headers);
 
   if (cors->max_age)
-    headers_set(opt->headers, CORSPRE "Max-Age", cors->max_age);
+    headers_set(opt->headers, CORS_MAX_AGE, (char*)cors->max_age);
 
   if (cors->credentials)
-    headers_set(opt->headers, CORSPRE "Allow-Credentials", cors->credentials);
+    headers_set(opt->headers, CORS_CREDENTIALS, (char*)cors->credentials);
 }

@@ -1,9 +1,9 @@
+#include <stdio.h>
+
 #include <file.h>
 #include <route.h>
 #include <server/http.h>
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <utils/memory.h>
 
 #define PORT 8080
 
@@ -21,7 +21,7 @@ void Index(Request* _, Response* res) {
   send_file("static/index.html", _, res);
 }
 
-void Users(UNUSED(Request* _), Response* res) {
+void GetUsers(UNUSED(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res,
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
   serve_static("/static", "static");
 
   route_get("/", Index);
-  route_get("/users", Users);
+  route_get("/users", GetUsers);
   route_post("/users", PostUsers);
   route_put("/users", PutUsers);
 
@@ -70,6 +70,7 @@ int main(int argc, char** argv) {
 
   cors_options_free(cors);
   server_options_free(opt);
+  router_free();
 
   if (sSock == INVALID_SOCKET)
     return 1;

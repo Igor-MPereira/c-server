@@ -1,12 +1,12 @@
 #include <response.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
+#include <utils/memory.h>
 #include <utils/string.h>
 
 Response* response_new() {
-  Response* response = malloc(sizeof(Response));
+  Response* response = memalloc(sizeof(Response));
 
   response->status_code = 0;
   response->status_text[0] = '\0';
@@ -18,8 +18,8 @@ Response* response_new() {
 
 void response_free(Response* response) {
   headers_free(response->headers);
-  free(response->body);
-  free(response);
+  memfree(response->body);
+  memfree(response);
 }
 
 void response_print(Response* response) {
@@ -34,12 +34,12 @@ void response_print(Response* response) {
 char* response_stringify(Response* response, char** string, size_t* size) {
   char* headers;
   *size = response_size(response, &headers);
-  *string = malloc(*size);
+  *string = memalloc(*size);
 
   snprintf(*string, *size, "HTTP/1.1 %d %s\r\n%s\r\n%s", response->status_code,
            response->status_text, headers, response->body);
 
-  free(headers);
+  memfree(headers);
 
   return *string;
 }
@@ -53,17 +53,17 @@ size_t response_size(Response* response, char** headers) {
 
 void response_set_body(Response* response, char* body) {
   size_t size = strlen(body);
-  free(response->body);
+  memfree(response->body);
 
-  response->body = malloc(size + 1);
+  response->body = memalloc(size + 1);
   strncpy(response->body, body, size + 1);
 
-  char* con_len = malloc(20);
+  char* con_len = memalloc(20);
   snprintf(con_len, 20, "%ld", size);
 
   headers_set(response->headers, "Content-Length", con_len);
 
-  free(con_len);
+  memfree(con_len);
 }
 
 void response_set_status(Response* response,

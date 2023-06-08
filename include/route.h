@@ -37,7 +37,7 @@ typedef struct {
 #define ROUTER_MAX_ROUTES 100
 
 typedef struct {
-  Route* routes;
+  Route** routes;
   size_t length;
 } Router;
 

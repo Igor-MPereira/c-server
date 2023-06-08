@@ -11,6 +11,11 @@ typedef struct _cors_options {
 } CorsOptions;
 
 #define CORSPRE "Access-Control-"
+#define CORS_ORIGIN CORSPRE "Allow-Origin"
+#define CORS_METHODS CORSPRE "Allow-Methods"
+#define CORS_HEADERS CORSPRE "Allow-Headers"
+#define CORS_MAX_AGE CORSPRE "Max-Age"
+#define CORS_CREDENTIALS CORSPRE "Allow-Credentials"
 
 ServerOptions* server_options_new();
 void server_options_free(ServerOptions* options);

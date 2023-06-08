@@ -1,13 +1,13 @@
 #include <request.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <utils/hash.h>
+#include <utils/memory.h>
 #include <utils/string.h>
 
 Request* request_new() {
-  Request* r = (Request*)malloc(sizeof(Request));
+  Request* r = (Request*)memalloc(sizeof(Request));
   r->headers = headers_new();
   r->body = null;
 
@@ -16,8 +16,8 @@ Request* request_new() {
 
 void request_free(Request* r) {
   headers_free(r->headers);
-  free(r->body);
-  free(r);
+  memfree(r->body);
+  memfree(r);
 }
 
 void request_parse_body(Request* r, char* ctx) {
@@ -25,7 +25,7 @@ void request_parse_body(Request* r, char* ctx) {
 
   if (contentLength) {
     i32 length = atoi(contentLength);
-    r->body = (char*)malloc(length + 1);
+    r->body = (char*)memalloc(length + 1);
     ctx += 2;
     strcpy(r->body, ctx);
     printf("ctx: %s\n", ctx);
@@ -38,8 +38,6 @@ void request_parse_body(Request* r, char* ctx) {
 }
 
 void request_parse(Request* r, char* reqStr) {
-  printf("Request string: %s\n", reqStr);
-
   char* ctx;
   char* line = strtok_r(reqStr, "\r\n", &ctx);
   char* method = strtok(line, " ");
@@ -53,7 +51,6 @@ void request_parse(Request* r, char* reqStr) {
   headers_parse(r->headers, &ctx);
 
   request_parse_body(r, ctx);
-  request_print(r);
 }
 
 void request_print(Request* r) {

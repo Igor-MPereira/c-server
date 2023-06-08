@@ -1,15 +1,15 @@
 #include <headers.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <utils/hash.h>
+#include <utils/memory.h>
 #include <utils/string.h>
 
 #include <hashed_file_extensions.h>
 
 Headers* headers_new() {
-  Headers* h = (Headers*)malloc(sizeof(Headers));
+  Headers* h = (Headers*)memalloc(sizeof(Headers));
   h->first = null;
   h->last = null;
   return h;
@@ -21,18 +21,18 @@ void headers_free(Headers* h) {
   while (header) {
     Header* next = header->next;
 
-    free(header->key);
-    free(header->value);
-    free(header);
+    memfree(header->key);
+    memfree(header->value);
+    memfree(header);
 
     header = next;
   }
 
-  free(h);
+  memfree(h);
 }
 
 void headers_add(Headers* h, const char* key, const char* value) {
-  Header* header = (Header*)malloc(sizeof(Header));
+  Header* header = (Header*)memalloc(sizeof(Header));
   header->key = strdup(key);
   header->value = strdup(value);
   header->next = null;
@@ -63,9 +63,9 @@ void headers_remove(Headers* h, char* key) {
       else
         h->last = header->prev;
 
-      free(header->key);
-      free(header->value);
-      free(header);
+      memfree(header->key);
+      memfree(header->value);
+      memfree(header);
 
       return;
     }
@@ -88,8 +88,6 @@ char* headers_get(Headers* h, char* key) {
 }
 
 bool headers_has(Headers* h, char* key) {
-  Header* header = h->first;
-
   return headers_get(h, key) != null;
 }
 
@@ -98,7 +96,7 @@ void headers_set(Headers* h, char* key, char* value) {
 
   while (header) {
     if (streq(header->key, key)) {
-      free(header->value);
+      memfree(header->value);
       header->value = value;
       return;
     }
@@ -123,7 +121,7 @@ void headers_print(Headers* h) {
 }
 
 char* headers_stringify(Headers* h) {
-  char* string = (char*)malloc(HEADER_MAX_SIZE + 1);
+  char* string = (char*)memalloc(HEADER_MAX_SIZE + 1);
   Header* header = h->first;
 
   string[0] = '\0';

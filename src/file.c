@@ -1,8 +1,8 @@
 #include <file.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
+#include <utils/memory.h>
 #include <utils/string.h>
 
 void join_path(const char* base, const char* path, char* buffer, size_t size) {
@@ -46,7 +46,6 @@ void send_file(const char* path,
   char fullpath[300] = {0};
 
   resolve_path(__ROOT_DIR__, path, fullpath, 300);
-  printf("Fullpath: %s\n", fullpath);
   FILE* file = fopen(fullpath, "rb");
 
   if (file == null) {
@@ -59,7 +58,7 @@ void send_file(const char* path,
 
   size_t size = file_size(file);
 
-  char* buffer = (char*)malloc(size + 1);
+  char* buffer = (char*)memalloc(size + 1);
 
   readfile(file, buffer, size);
   buffer[size] = '\0';
@@ -70,7 +69,7 @@ void send_file(const char* path,
   headers_add(res->headers, "Content-Type", mime_type(fullpath));
   response_set_body(res, buffer);
 
-  free(buffer);
+  memfree(buffer);
 }
 
 bool open_file(const char* path, FILE** file) {
