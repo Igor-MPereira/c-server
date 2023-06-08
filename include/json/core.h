@@ -1,13 +1,50 @@
 #pragma once
 
-typedef struct Json Json;
-struct Json {
-  char* key;
-  char* value;
-  Json* next;
-};
+#include <utils/types.h>
 
-typedef struct JsonValue {
-  char* key;
-  char* value;
+typedef enum JsonType {
+  JSON_TYPE_OBJECT,
+  JSON_TYPE_ARRAY,
+  JSON_TYPE_STRING,
+  JSON_TYPE_NUMBER,
+  JSON_TYPE_BOOLEAN,
+  JSON_TYPE_NULL
+} JsonType;
+
+#define OBJECT OBJECT
+#define ARRAY ARRAY
+#define STRING STRING
+#define NUMBER NUMBER
+#define BOOLEAN BOOLEAN
+#define NULL NULL
+
+#define json_t(X) JSON_TYPE_##X
+
+typedef union JsonValue {
+  JsonObject* object;
+  JsonArray* array;
+  char* string;
+  double number;
+  bool boolean;
 } JsonValue;
+
+typedef struct JsonObject {
+  char* key;
+  Json* value;
+} JsonObject;
+
+typedef struct JsonArray {
+  Json** items;
+  size_t length;
+} JsonArray;
+
+typedef struct Json {
+  JsonType type;
+  JsonValue value;
+} Json;
+
+Json* json_new();
+
+void json_object_free(JsonObject* object);
+void json_array_free(JsonArray* array);
+void json_free(Json* json);
