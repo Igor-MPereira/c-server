@@ -21,7 +21,7 @@ void Index(Request* _, Response* res) {
   send_file("static/index.html", _, res);
 }
 
-void Users(__UNUSED_PARAM(Request* _), Response* res) {
+void Users(UNUSED(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res,
@@ -31,13 +31,13 @@ void Users(__UNUSED_PARAM(Request* _), Response* res) {
                     "]}");
 }
 
-void PostUsers(__UNUSED_PARAM(Request* _), Response* res) {
+void PostUsers(UNUSED(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User created\"}");
 }
 
-void PutUsers(__UNUSED_PARAM(Request* _), Response* res) {
+void PutUsers(UNUSED(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User updated\"}");

@@ -72,4 +72,3 @@ void response_set_status(Response* response,
   response->status_code = status_code;
   strncpy(response->status_text, status_text, 15);
 }
-

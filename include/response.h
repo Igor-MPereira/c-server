@@ -1,9 +1,8 @@
 #pragma once
 
 #include <headers.h>
-#include <server/http.h>
 
-typedef struct {
+typedef struct Response {
   u16 status_code;
   char status_text[16];
   Headers* headers;

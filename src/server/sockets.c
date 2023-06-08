@@ -1,5 +1,7 @@
 #include <server/sockets.h>
 
+#include <stdio.h>
+
 SOCKET listen_socket(u16 port) {
   SOCKET sSock;
 

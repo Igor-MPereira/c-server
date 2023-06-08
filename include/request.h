@@ -2,7 +2,7 @@
 
 #include <headers.h>
 
-typedef struct {
+typedef struct Request {
   char method[8], http_version[16], path[256];
   char* query;
   char* body;
