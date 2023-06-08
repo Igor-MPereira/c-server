@@ -20,13 +20,7 @@ typedef enum JsonType {
 
 #define json_t(X) JSON_TYPE_##X
 
-typedef union JsonValue {
-  JsonObject* object;
-  JsonArray* array;
-  char* string;
-  double number;
-  bool boolean;
-} JsonValue;
+typedef struct Json Json;
 
 typedef struct JsonObject {
   char* key;
@@ -38,10 +32,18 @@ typedef struct JsonArray {
   size_t length;
 } JsonArray;
 
-typedef struct Json {
+typedef union JsonValue {
+  JsonObject* object;
+  JsonArray* array;
+  char* string;
+  double number;
+  bool boolean;
+} JsonValue;
+
+struct Json {
   JsonType type;
   JsonValue value;
-} Json;
+};
 
 Json* json_new();
 
