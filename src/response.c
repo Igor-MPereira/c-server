@@ -73,20 +73,3 @@ void response_set_status(Response* response,
   strncpy(response->status_text, status_text, 15);
 }
 
-int response_send(SOCKET cSock, Response* response) {
-  char* string;
-  size_t size;
-
-  response_stringify(response, &string, &size);
-
-  if (send(cSock, string, size, 0) == SOCKET_ERROR) {
-    perror("Failed to send data.\n");
-    close(cSock);
-    WSACleanup();
-    return 1;
-  }
-
-  free(string);
-
-  return 0;
-}

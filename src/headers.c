@@ -139,6 +139,15 @@ char* headers_stringify(Headers* h) {
   return string;
 }
 
+void headers_merge(Headers* headers, Headers* other) {
+  Header* header = other->first;
+
+  while (header) {
+    headers_set(headers, header->key, header->value);
+    header = header->next;
+  }
+}
+
 const char* mime_type(const char* path) {
   const char* last_dot = strrchr(path, '.');
 

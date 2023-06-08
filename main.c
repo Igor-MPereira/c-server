@@ -1,6 +1,7 @@
 #include <file.h>
-#include <http.h>
 #include <route.h>
+#include <server/http.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,7 +21,7 @@ void Index(Request* _, Response* res) {
   send_file("static/index.html", _, res);
 }
 
-void Users(Request* _ __attribute_maybe_unused__, Response* res) {
+void Users(__UNUSED_PARAM(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res,
@@ -30,13 +31,13 @@ void Users(Request* _ __attribute_maybe_unused__, Response* res) {
                     "]}");
 }
 
-void PostUsers(Request* _ __attribute_maybe_unused__, Response* res) {
+void PostUsers(__UNUSED_PARAM(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User created\"}");
 }
 
-void PutUsers(Request* __attribute_maybe_unused__, Response* res) {
+void PutUsers(__UNUSED_PARAM(Request* _), Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User updated\"}");
@@ -49,7 +50,7 @@ int main(int argc, char** argv) {
 
   if (argc > 1)
     port = atoi(argv[1]);
-  
+
   serve_static("/static", "static");
 
   route_get("/", Index);
@@ -57,9 +58,18 @@ int main(int argc, char** argv) {
   route_post("/users", PostUsers);
   route_put("/users", PutUsers);
 
-  sSock = http_server(port, onload, true);
+  ServerOptions* opt = server_options_new();
+  CorsOptions* cors = cors_options_new();
 
-  router_free();
+  cors->origin = "*";
+  use_cors(opt, cors);
+
+  headers_add(opt->headers, "X-Powered-By", "c-http-server");
+
+  sSock = http_server(port, opt, onload);
+
+  cors_options_free(cors);
+  server_options_free(opt);
 
   if (sSock == INVALID_SOCKET)
     return 1;

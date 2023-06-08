@@ -1,11 +1,9 @@
 #pragma once
-
-#include <bits/types/FILE.h>
+#include <stdio.h>
 
 #include <request.h>
 #include <response.h>
 
-// path separator
 #ifdef _WIN32
 #define PATHSEP '\\'
 #define PATHSEPSTR "\\"

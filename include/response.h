@@ -1,7 +1,7 @@
 #pragma once
 
 #include <headers.h>
-#include <http.h>
+#include <server/http.h>
 
 typedef struct {
   u16 status_code;
@@ -39,5 +39,3 @@ void response_set_body(Response* response, char* body);
 void response_set_status(Response* response,
                          u16 status_code,
                          char* status_text);
-
-int response_send(SOCKET cSock, Response* response);

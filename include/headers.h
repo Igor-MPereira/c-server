@@ -71,4 +71,9 @@ char* headers_stringify(Headers* headers);
 /// @param ctx The string.
 void headers_parse(Headers* headers, char** ctx);
 
+/// @brief Merge two headers.
+/// @param headers The headers.
+/// @param other The other headers.
+void headers_merge(Headers* headers, Headers* other);
+
 const char* mime_type(const char* path);
