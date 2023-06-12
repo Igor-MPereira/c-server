@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include <file.h>
+#include <json/io.h>
+#include <json/parse.h>
 #include <route.h>
 #include <server/http.h>
 #include <utils/memory.h>
@@ -43,37 +45,53 @@ void PutUsers(UNUSED(Request* _), Response* res) {
   response_set_body(res, "{\"message\": \"User updated\"}");
 }
 
-int main(int argc, char** argv) {
-  SOCKET sSock;
+int main(UNUSED(int argc), UNUSED(char** argv)) {
+  // SOCKET sSock;
 
-  u16 port = PORT;
+  // u16 port = PORT;
 
-  if (argc > 1)
-    port = atoi(argv[1]);
+  // if (argc > 1)
+  //   port = atoi(argv[1]);
 
-  serve_static("/static", "static");
+  // serve_static("/static", "static");
 
-  route_get("/", Index);
-  route_get("/users", GetUsers);
-  route_post("/users", PostUsers);
-  route_put("/users", PutUsers);
+  // route_get("/", Index);
+  // route_get("/users", GetUsers);
+  // route_post("/users", PostUsers);
+  // route_put("/users", PutUsers);
 
-  ServerOptions* opt = server_options_new();
-  CorsOptions* cors = cors_options_new();
+  // ServerOptions* opt = server_options_new();
+  // CorsOptions* cors = cors_options_new();
 
-  cors->origin = "*";
-  use_cors(opt, cors);
+  // cors->origin = "*";
+  // use_cors(opt, cors);
 
-  headers_add(opt->headers, "X-Powered-By", "c-http-server");
+  // headers_add(opt->headers, "X-Powered-By", "c-http-server");
 
-  sSock = http_server(port, opt, onload);
+  // sSock = http_server(port, opt, onload);
 
-  cors_options_free(cors);
-  server_options_free(opt);
-  router_free();
+  // cors_options_free(cors);
+  // server_options_free(opt);
+  // router_free();
 
-  if (sSock == INVALID_SOCKET)
-    return 1;
+  // if (sSock == INVALID_SOCKET)
+  //   return 1;
+
+  Json* json = json_new();
+
+  char* s = "{\"name\": \"John Doe\", \"age\": 30}";
+
+  size_t position = 0;
+
+  json_parse(json, &s, &position);
+
+  json_print(json, 2);
+  printf("\n");
+
+  printf("json[\"%s\"] = \"%s\"\n", json->value.object->key,
+         json->value.object->value->value.string);
+
+  json_free(json);
 
   return 0;
 }

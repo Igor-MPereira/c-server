@@ -21,11 +21,13 @@ typedef enum JsonType {
 #define json_t(X) JSON_TYPE_##X
 
 typedef struct Json Json;
+typedef struct JsonObject JsonObject;
 
-typedef struct JsonObject {
+struct JsonObject {
   char* key;
   Json* value;
-} JsonObject;
+  JsonObject* next;
+};
 
 typedef struct JsonArray {
   Json** items;
@@ -50,3 +52,18 @@ Json* json_new();
 void json_object_free(JsonObject* object);
 void json_array_free(JsonArray* array);
 void json_free(Json* json);
+
+Json* json_get(Json* json, char* key);
+Json* json_at(Json* json, size_t index);
+
+void json_get_str(char** dest, Json* json, char* key);
+void json_get_num(double* dest, Json* json, char* key);
+void json_get_bool(bool* dest, Json* json, char* key);
+void json_get_obj(JsonObject** dest, Json* json, char* key);
+void json_get_arr(JsonArray** dest, Json* json, char* key);
+
+void json_str_at(char** dest, Json* json, size_t index);
+void json_num_at(double* dest, Json* json, size_t index);
+void json_bool_at(bool* dest, Json* json, size_t index);
+void json_obj_at(JsonObject** dest, Json* json, size_t index);
+void json_arr_at(JsonArray** dest, Json* json, size_t index);
