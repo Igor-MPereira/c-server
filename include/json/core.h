@@ -16,7 +16,6 @@ typedef enum JsonType {
 #define STRING STRING
 #define NUMBER NUMBER
 #define BOOLEAN BOOLEAN
-#define NULL NULL
 
 #define json_t(X) JSON_TYPE_##X
 
@@ -48,10 +47,9 @@ struct Json {
 };
 
 Json* json_new();
-
-void json_object_free(JsonObject* object);
-void json_array_free(JsonArray* array);
 void json_free(Json* json);
+
+void json_parse(Json* json, char* s);
 
 Json* json_get(Json* json, char* key);
 Json* json_at(Json* json, size_t index);

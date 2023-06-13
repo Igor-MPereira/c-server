@@ -3,12 +3,6 @@
 #include "request.h"
 #include "response.h"
 
-// Defined by CMake
-
-#if !defined(__ROOT_DIR__)
-#define __ROOT_DIR__ ""
-#endif  // __ROOT_DIR__
-
 typedef void (*route_handler)(Request*, Response*);
 
 typedef struct {

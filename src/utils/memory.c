@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <utils/types.h>
+#include <utils/defs.h>
 
 static Allocation* allocations = null;
 static bool trace = false;
@@ -111,7 +112,8 @@ void memory_report(bool short_file) {
       file_label_space, file_label_space);
   while (a) {
     printf("| %p | %6zu ", a->ptr, a->size);
-    char* file = (char*)a->file + (short_file ? strlen(__ROOT_DIR__) + 1 : 0);
+    char* file =
+        (char*)a->file + (short_file ? strlen(__ROOT_DIR__) + 1 : 0);
     char location[100] = {0};
     sprintf(location, "%s:%d", file, a->line);
     printf(short_file ? "| %-26s |\n" : "| %-56s |\n", location);

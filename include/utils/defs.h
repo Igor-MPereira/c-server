@@ -13,3 +13,7 @@
 #endif  // __UNUSED_PARAM
 
 #define UNUSED(P) __UNUSED_PARAM(P)
+
+#if !defined(__ROOT_DIR__)
+#define __ROOT_DIR__ "C:\\Users\\alunos\\Documents\\GitHub\\c-server"
+#endif  // __ROOT_DIR__

@@ -40,9 +40,7 @@ void resolve_path(const char* base,
   join_path(base, path, buffer, size);
 }
 
-void send_file(const char* path,
-               Request* _ __attribute_maybe_unused__,
-               Response* res) {
+void send_file(const char* path, UNUSED(Request* _), Response* res) {
   char fullpath[300] = {0};
 
   resolve_path(__ROOT_DIR__, path, fullpath, 300);
