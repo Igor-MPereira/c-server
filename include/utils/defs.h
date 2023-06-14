@@ -12,7 +12,7 @@
 #define __UNUSED_PARAM(P) P __attribute__((unused))
 #endif  // __UNUSED_PARAM
 
-#define UNUSED(P) __UNUSED_PARAM(P)
+#define UNUSED __attribute__((unused))
 
 #if !defined(__ROOT_DIR__)
 #define __ROOT_DIR__ "C:\\Users\\alunos\\Documents\\GitHub\\c-server"

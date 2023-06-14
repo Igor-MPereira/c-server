@@ -151,7 +151,7 @@ void __json_parse_number(double* dest,
 
   temp = *src;
 
-  while (isdigit(peek(src)) || peek(src) == '.' || peek(src) == 'e' ||
+  while (is_digit(peek(src)) || peek(src) == '.' || peek(src) == 'e' ||
          peek(src) == 'E' || peek(src) == '+' || peek(src) == '-') {
     next(src, position);
   }

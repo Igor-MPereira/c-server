@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utils/types.h>
+#include <json/exception.h>
 
 typedef enum JsonType {
   JSON_TYPE_OBJECT,

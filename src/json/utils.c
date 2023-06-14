@@ -1,11 +1,15 @@
 #include <json/utils.h>
 
-#include <json/core.h>
+#include <utils/memory.h>
 
 // PARSING UTILS
 
 bool is_ws(char c) {
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
+
+bool is_digit(char c) {
+  return c >= '0' && c <= '9' || c == '-' || c == '+';
 }
 
 char skip_ws(char** s, size_t* position) {

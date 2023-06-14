@@ -1,10 +1,12 @@
 #pragma once
 
+#include <json/core.h>
 #include <utils/types.h>
 
 // PARSING UTILS
 
 bool is_ws(char c);
+bool is_digit(char c);
 char skip_ws(char** s, size_t* position);
 char peek(char** s);
 char next(char** s, size_t* position);

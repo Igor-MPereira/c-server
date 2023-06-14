@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <file.h>
+#include <json/core.h>
 #include <json/io.h>
 #include <json/parse.h>
 #include <route.h>
@@ -23,7 +24,7 @@ void Index(Request* _, Response* res) {
   send_file("static/index.html", _, res);
 }
 
-void GetUsers(UNUSED(Request* _), Response* res) {
+void GetUsers(Request* _ UNUSED, Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res,
@@ -33,19 +34,20 @@ void GetUsers(UNUSED(Request* _), Response* res) {
                     "]}");
 }
 
-void PostUsers(UNUSED(Request* _), Response* res) {
+void PostUsers(Request* _ UNUSED, Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User created\"}");
 }
 
-void PutUsers(UNUSED(Request* _), Response* res) {
+void PutUsers(Request* _ UNUSED, Response* res) {
   response_set_status(res, 200, "OK");
   headers_add(res->headers, "Content-Type", "application/json");
   response_set_body(res, "{\"message\": \"User updated\"}");
 }
 
-int main(int argc, char** argv) {
+int main(int argc UNUSED, char** argv UNUSED) {
+  /*
   SOCKET sSock;
 
   u16 port = PORT;
@@ -76,6 +78,24 @@ int main(int argc, char** argv) {
 
   if (sSock == INVALID_SOCKET)
     return 1;
+  */
+
+  double n = 0;
+  size_t position = 0;
+  char* src = "4.56e-2";
+
+  __json_parse_number(&n, &src, &position, true);
+
+  JsonError err;
+
+  if (json_geterr(&err)) {
+    return 1;
+  }
+
+  printf("number %f\n", n);
+  printf("position %zu\n", position);
+  printf("src after %s\n", src);
+  printf("src before %s\n", src - position);
 
   // Json* json = json_new();
 
