@@ -1,6 +1,7 @@
 #include <json/io.h>
 
-#include <stdio.h>
+#include <utils/io.h>
+#include <utils/string.h>
 
 void json_print_object(JsonObject* json_obj, size_t indent) {
   printf("{");
@@ -82,4 +83,30 @@ void json_print(Json* json, size_t indent) {
       printf("null");
       break;
   }
+}
+
+void json_perror(JsonError error, char* src) {
+  const char* error_msg = json_errmsg(error.exception);
+
+  printf("JSON parse error: %s at position %zu\n", error_msg, error.position);
+
+  char view[(ERRPADDING << 1) + 2];
+  size_t start = error.position > ERRPADDING ? error.position - ERRPADDING : 0;
+  size_t end = error.position + ERRPADDING;
+
+  strncpy(view, src + start, end - start);
+
+  printf("%s", start > 0 ? "  ..." : "    \"");
+
+  escprintf(view);
+
+  printf("%s\n", end < strlen(src) ? "...  " : "\"    ");
+
+  for (size_t i = 0; i < error.position - start + 5; i++) {
+    printf(" ");
+
+    
+  }
+
+  printf("^\n");
 }

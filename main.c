@@ -3,7 +3,6 @@
 #include <file.h>
 #include <json/core.h>
 #include <json/io.h>
-#include <json/parse.h>
 #include <route.h>
 #include <server/http.h>
 #include <utils/memory.h>
@@ -80,19 +79,20 @@ int main(int argc UNUSED, char** argv UNUSED) {
     return 1;
   */
 
-  double n = 0;
   size_t position = 0;
-  char* src = "4.56e-2";
+  char* src = "{\"name\": \"John Doe\", \"age\": 30";
+  Json* json = json_new();
 
-  __json_parse_number(&n, &src, &position, true);
+  json_parse(json, src);
 
   JsonError err;
 
   if (json_geterr(&err)) {
+    json_perror(err, src);
+
     return 1;
   }
 
-  printf("number %f\n", n);
   printf("position %zu\n", position);
   printf("src after %s\n", src);
   printf("src before %s\n", src - position);

@@ -11,3 +11,5 @@
     strftime(buf, sizeof(buf), "%c", tm);       \
     printf("[%s] " format, buf, ##__VA_ARGS__); \
   }
+
+void escprintf(char* str);

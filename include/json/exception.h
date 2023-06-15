@@ -33,6 +33,19 @@ typedef enum JsonException {
 #define NULLPTR NULLPTR
 #define jsonex(X) JSON_EXCEPTION_##X
 
+#define BAD_CONTROL_CHARACTER_MSG "bad control character"
+#define UNEXPECTED_TOKEN_MSG "unexpected token"
+#define UNEXPECTED_END_OF_INPUT_MSG "unexpected end of input"
+#define UNEXPECTED_NUMBER_MSG "unexpected number"
+#define UNEXPECTED_WHITESPACE_MSG "unexpected whitespace"
+#define UNEXPECTED_NON_WHITESPACE_MSG "unexpected non-whitespace"
+#define UNTERMINATED_STRING_MSG "unterminated string"
+#define EXPECTED_COMMA_OR_CLOSE_MSG "expected comma or close"
+#define EXPECTED_COLON_MSG "expected colon"
+#define EXPECTED_PROPERTY_MSG "expected property"
+#define EXPECTED_PROPERTY_OR_CLOSE_MSG "expected property or close"
+#define NULLPTR_MSG "null pointer"
+
 typedef struct JsonError {
   JsonException exception;
   size_t position;
@@ -41,3 +54,4 @@ typedef struct JsonError {
 void json_seterr(JsonException exception, size_t position);
 bool json_geterr(JsonError* error);
 bool json_haserr();
+const char* json_errmsg(JsonException exception);

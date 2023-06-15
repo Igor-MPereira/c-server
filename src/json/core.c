@@ -1,5 +1,8 @@
 #include <json/core.h>
 
+#include <stdio.h>
+
+#include <json/parse.h>
 #include <json/utils.h>
 #include <utils/memory.h>
 
@@ -28,4 +31,10 @@ void json_free(Json* json) {
   }
 
   memfree(json);
+}
+
+void json_parse(Json* json, char* src) {
+  size_t position = 0;
+  __json_parse(json, &src, &position, true);
+  src -= position;
 }

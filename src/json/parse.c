@@ -41,9 +41,10 @@ void __json_parse(Json* json, char** src, size_t* position, bool is_root) {
       } else if (strneq(*src, "null", 4)) {
         json->type = json_t(NULL);
         src += 4;
-      } else if (token == '-' || (token >= '0' && token <= '9')) {
+      } else if (token == '-' || token == '+' ||
+                 (token >= '0' && token <= '9')) {
         json->type = json_t(NUMBER);
-        json->value.number = 0;
+        return __json_parse_number(&json->value.number, src, position, is_root);
       } else {
         return json_seterr(jsonex(UNEXPECTED_TOKEN), *position);
       }
@@ -142,7 +143,7 @@ void __json_parse_string(char** dest,
     return json_seterr(jsonex(UNEXPECTED_NON_WHITESPACE), *position);
 }
 
-void __json_parse_number(double* dest,
+void __json_parse_number(f64* dest,
                          char** src,
                          size_t* position,
                          bool is_root) {
@@ -156,7 +157,7 @@ void __json_parse_number(double* dest,
     next(src, position);
   }
 
-  if (peek(src) == '\0')
+  if (peek(src) == '\0' )
     return json_seterr(jsonex(UNEXPECTED_END_OF_INPUT), *position);
 
   *dest = strtod(temp, &end);
