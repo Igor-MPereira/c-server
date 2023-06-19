@@ -1,16 +1,11 @@
 #include <json/utils.h>
-
 #include <utils/memory.h>
 
 // PARSING UTILS
 
-bool is_ws(char c) {
-  return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-}
+bool is_ws(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
 
-bool is_digit(char c) {
-  return c >= '0' && c <= '9' || c == '-' || c == '+';
-}
+bool is_digit(char c) { return c >= '0' && c <= '9' || c == '-' || c == '+'; }
 
 char skip_ws(char** s, size_t* position) {
   while (is_ws(**s)) {
@@ -21,9 +16,7 @@ char skip_ws(char** s, size_t* position) {
   return **s;
 }
 
-char peek(char** s) {
-  return **s;
-}
+char peek(char** s) { return **s; }
 
 char next(char** s, size_t* position) {
   (*s)++;
@@ -45,10 +38,10 @@ void json_object_free(JsonObject* json_obj) {
 }
 
 void json_array_free(JsonArray* json_array) {
-  for (size_t i = 0; i < json_array->length; i++) {
-    json_free(json_array->items[i]);
-  }
-
-  memfree(json_array->items);
+  json_free(json_array->value);
   memfree(json_array);
+
+  if (json_array->next != null) {
+    json_array_free(json_array->next);
+  }
 }

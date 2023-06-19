@@ -1,10 +1,9 @@
-#include <stdio.h>
-
 #include <file.h>
 #include <json/core.h>
 #include <json/io.h>
 #include <route.h>
 #include <server/http.h>
+#include <stdio.h>
 #include <utils/memory.h>
 
 #define PORT 8080
@@ -80,7 +79,7 @@ int main(int argc UNUSED, char** argv UNUSED) {
   */
 
   size_t position = 0;
-  char* src = "{\"name\": \"John Doe\", \"age\": 30";
+  char* src = "{\"name\": \"John Doe\", \"age\": 30}";
   Json* json = json_new();
 
   json_parse(json, src);
@@ -93,25 +92,7 @@ int main(int argc UNUSED, char** argv UNUSED) {
     return 1;
   }
 
-  printf("position %zu\n", position);
-  printf("src after %s\n", src);
-  printf("src before %s\n", src - position);
-
-  // Json* json = json_new();
-
-  // char* s = "{\"name\": \"John Doe\", \"age\": 30}";
-
-  // size_t position = 0;
-
-  // json_parse(json, &s, &position);
-
-  // json_print(json, 2);
-  // printf("\n");
-
-  // printf("json[\"%s\"] = \"%s\"\n", json->value.object->key,
-  //        json->value.object->value->value.string);
-
-  // json_free(json);
+  json_print(json, 1);
 
   return 0;
 }

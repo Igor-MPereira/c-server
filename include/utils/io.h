@@ -12,4 +12,4 @@
     printf("[%s] " format, buf, ##__VA_ARGS__); \
   }
 
-void escprintf(char* str);
+size_t escprintf(char* str);
